@@ -4,7 +4,7 @@ import numpy, scipy, pygame
 import time, copy, string, strop
 
 params = {'ID number':'1',
-	 'frameRate':60,'duration':0.05, 'ISI': 0.02, 'fp': 1,'task':'T1_T2'}
+	 'frameRate':60,'duration':0.015, 'ISI': 0.075, 'fp': 1,'task':'T1_T2'}
 
 
 dlg = gui.DlgFromDict(params, title='T1_T2', fixed=['dateStr'])
