@@ -32,7 +32,7 @@ for T1pos in [5,7]:
     for T2pres in [0,1]:
         for T2pos in [1,3,5,7,9]:
             stimList.append({'T1pos': T1pos, 'T2pres': T2pres, 'T2pos': T2pos})
-trials = data.TrialHandler(stimList, 10)
+trials = data.TrialHandler(stimList, 15)
 
 for thisTrial in trials:
     
