@@ -32,7 +32,7 @@ for T1pos in [5,7]:
     for T2pres in [0,1]:
         for T2pos in [1,3,5,7,9]:
             stimList.append({'T1pos': T1pos, 'T2pres': T2pres, 'T2pos': T2pos})
-trials = data.TrialHandler(stimList, 15)
+trials = data.TrialHandler(stimList, 20)
 
 for thisTrial in trials:
     
@@ -88,7 +88,7 @@ for thisTrial in trials:
             
     thisResp2=None
     while thisResp2==None:
-        allKeys=event.waitKeys()
+        allKeys=event.waitKeys(keyList=['0','1', 'escape'])
         for T2resp in allKeys:
             if T2resp in ['escape']:core.quit()#abort experiment
             #T2resp=T2resp
