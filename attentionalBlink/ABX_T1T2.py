@@ -32,7 +32,7 @@ for T1pos in [5,7]:
     for T2pres in [0,1]:
         for T2pos in [1,3,5,7,9]:
             stimList.append({'T1pos': T1pos, 'T2pres': T2pres, 'T2pos': T2pos})
-trials = data.TrialHandler(stimList, 20)
+trials = data.TrialHandler(stimList, 15)
 
 for thisTrial in trials:
     
@@ -43,7 +43,7 @@ for thisTrial in trials:
     if trials.thisTrial['T2pres']==1:
         T2=letters[10]
     else:
-        T2=distractors[numpy.random.random_integers(0,8)]
+        T2=letters[numpy.random.random_integers(0,89]
     
      #fixation screen
     for frameN in range(int(round(params['fp']*params['frameRate']))):
@@ -52,7 +52,7 @@ for thisTrial in trials:
         
     for pos in range(1,20):
         
-        D=distractors[numpy.random.random_integers(0,8)]
+        D=letters[numpy.random.random_integers(0,9]
           
         if pos == T1position:
            stim=T1
