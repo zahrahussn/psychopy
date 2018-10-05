@@ -43,7 +43,7 @@ for thisTrial in trials:
     if trials.thisTrial['T2pres']==1:
         T2=letters[10]
     else:
-        T2=letters[numpy.random.random_integers(0,89]
+        T2=letters[numpy.random.random_integers(0,9)]
     
      #fixation screen
     for frameN in range(int(round(params['fp']*params['frameRate']))):
@@ -52,7 +52,7 @@ for thisTrial in trials:
         
     for pos in range(1,20):
         
-        D=letters[numpy.random.random_integers(0,9]
+        D=letters[numpy.random.random_integers(0,9)}
           
         if pos == T1position:
            stim=T1
