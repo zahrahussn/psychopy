@@ -1,0 +1,22 @@
+(dp1
+S'fp'
+p2
+I1
+sS'task'
+p3
+VFlanker_Task
+p4
+sS'ID number'
+p5
+V999
+p6
+sS'frameRate'
+p7
+I60
+sS'ISI'
+p8
+F0.02
+sS'duration'
+p9
+F0.050000000000000003
+s.
