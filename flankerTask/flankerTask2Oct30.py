@@ -1,4 +1,4 @@
-#from psychopy import *
+1#from psychopy import *
 from psychopy import visual, event, core, gui, data
 from psychopy.tools.filetools import fromFile, toFile
 from psychopy.visual import ShapeStim
@@ -10,7 +10,7 @@ from psychopy import sound
 
 
 params = {'ID number':'1',
-	 'frameRate':60,'duration':0.05, 'ISI': 0.02, 'fp': 1,'task':'Flanker_Task'}
+	 'frameRate':60,'duration':0.2, 'ISI': 0.02, 'fp': 1,'task':'Flanker_Task'}
 
 dlg = gui.DlgFromDict(params, title='Flanker_Task', fixed=['dateStr'])
 if dlg.OK:
@@ -23,7 +23,7 @@ dataFile = open(fileName+'.txt', 'a')#a simple text fil e with 'comma-separated-
 dataFile.write('dir, con, accuracy, RT\n') 
 
 # create window and stimuli
-win = visual.Window(fullscr=True, allowGUI = True, monitor = 'raylan', units = 'deg')
+win = visual.Window(fullscr=True, allowGUI = True, monitor = 'boyd', units = 'deg')
 arrowVert = [(-0.4,0.05),(-0.4,-0.05),(-.2,-0.05),(-.2,-0.1),(0,0),(-.2,0.1),(-.2,0.05)]
 arrowCol= [-1, -1, -1]
 arrowRGB = ShapeStim(win, vertices=arrowVert, fillColor=arrowCol, size=5, lineColor=arrowCol)
@@ -37,8 +37,8 @@ arrow2.pos=5,0
 arrow3.pos=2.5,0
 arrow4.pos=-5, 0
 arrow5.pos=-2.5,0
-corSnd = sound.Sound(2400, octave=14, secs=0.01)
-incorSnd = sound.Sound(800, octave=7, secs=0.01)
+corSnd = sound.Sound(2400, octave=14, secs=0.1)
+incorSnd = sound.Sound(800, octave=7, secs=0.1)
 corSnd.setVolume(0.7)
 incorSnd.setVolume(0.7)
 
