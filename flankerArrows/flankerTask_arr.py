@@ -10,7 +10,7 @@ from psychopy import sound
 
 
 params = {'ID number':'1',
-	 'frameRate':60, 'ISI': 1, 'fp': 0.5,'task':'flankerTask', 'computer':'raylan'}
+	 'frameRate':60, 'ISI': 1, 'fp': 0.5,'task':'flankerTask', 'computer':'boyd'}
 
 dlg = gui.DlgFromDict(params, title='Flanker_Task', fixed=['dateStr'])
 if dlg.OK:
