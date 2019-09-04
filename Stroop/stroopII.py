@@ -17,9 +17,9 @@ if dlg.OK:
 else:
     core.quit()#the user hit cancel so exit
     
-fileName = params['ID number']+'_s2'+'_'+params['_computer']
+fileName = params['ID number']+'_s2'+'_'+params['computer']
 dataFile = open('/home/zahrahussain/Documents/psychopy/data/stroop/Joint EEG data/'+fileName+'.txt', 'a')#a simple text file with 'comma-separated-values'
-dataFile.write('colors, accuracy, RT\n') 
+dataFile.write('colors, response, accuracy, RT\n') 
 
 # Create a visual window:
 # win = visual.Window(fullscr=True, allowGUI = True, monitor = 'testMonitor', units = 'deg')
@@ -71,11 +71,12 @@ for thisTrial in trials:
         for keyTuple in allKeys:
             [thisKey, thisRT] = keyTuple
         for thisKey in allKeys:
-            if thisKey in ['escape']:core.quit()
-            elif int(thisKey[0]) == int(trials.thisTrial['color']):
-                thisResponse=1
-                accuracy = 1
-                corSnd.play()
+            if thisKey[0] in ['escape']:core.quit()
+            elif thisKey[0] in ['1','2','3','4']:
+                if int(thisKey[0]) == int(trials.thisTrial['color']):
+                    thisResponse=1
+                    accuracy = 1
+                    corSnd.play()
             else: 
                 thisResponse=1
                 accuracy = 0
@@ -85,7 +86,7 @@ for thisTrial in trials:
 
     trials.addData('RT', thisRT)
     event.clearEvents()
-    dataFile.write('%s %s %s \n' %(trials.thisTrial['color'], accuracy, round(thisRT,2)))
+    dataFile.write('%s %s %s %s \n' %(trials.thisTrial['color'], thisKey[0], accuracy, round(thisRT,2)))
     
 
 
