@@ -10,7 +10,7 @@ from psychopy import sound
 
 
 params = {'ID number':'1',
-	 'frameRate':60, 'ISI': 1, 'fp': 0.5,'task':'flankerTask', 'computer':'boyd'}
+	 'frameRate':60, 'ISI': 1, 'fp': 0.5,'task':'flankerTask', 'computer':'raylan'}
 
 # create window and stimuli
 win = visual.Window(fullscr=True, allowGUI = True, monitor = 'attentionExperimentsMonitor', units = 'deg')
