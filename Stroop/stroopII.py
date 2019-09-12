@@ -53,20 +53,15 @@ for thisTrial in trials:
         fixation.draw()
         win.update()
 
-    # show arrow for 200 ms
-    for frameN in range(int(round(params['duration']*params['frameRate']))):
-        square.draw() 
-        win.update()
-    
-    # show blank screen for 500 ms
-    for frameN in range(int(round(params['ISI']*params['frameRate']))):
-        win.update()
-            
-    clockRT.reset()
-    
-    # collect response
+    # show square 
     thisResponse = None
     while thisResponse == None:
+        clockRT.reset()
+        square.draw() 
+        win.update()
+
+    # collect response
+
         allKeys = event.waitKeys(timeStamped = clockRT)
         for keyTuple in allKeys:
             [thisKey, thisRT] = keyTuple
@@ -77,10 +72,10 @@ for thisTrial in trials:
                     thisResponse=1
                     accuracy = 1
                     corSnd.play()
-            else: 
-                thisResponse=1
-                accuracy = 0
-                incorSnd.play()
+                else: 
+                    thisResponse=1
+                    accuracy = 0
+                    incorSnd.play()
             trials.data.add('accuracy', accuracy)
     
 
