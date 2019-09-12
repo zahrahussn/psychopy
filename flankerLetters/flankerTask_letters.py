@@ -18,7 +18,7 @@ else:
     core.quit()#the user hit cancel so exit
     
 fileName = params['ID number']+'_flankerLetter'+'_'+ params['computer'] 
-dataFile = open('/home/zahrahussain/Documents/psychopy/data/flankerLetter/Joint EEG data/'+fileName+'.txt', 'a')#a simple text file with 'comma-separated-values'
+dataFile = open('/home/zahrahussain/Documents/psychopy/data/flankerLetter/Joint EEG data/'+fileName +'.txt', 'a')#a simple text file with 'comma-separated-values'
 dataFile.write('target, distractor, congruence,corresp, response, accuracy, RT\n') 
 
 # create window and stimuli
@@ -73,6 +73,7 @@ for thisTrial in trials:
 
     # stimulus
 #    for frameN in range(int(round(params['duration']*params['frameRate']))):
+        clockRT.reset()
         targ.draw() 
         dist1.draw()
         dist2.draw()
@@ -82,7 +83,7 @@ for thisTrial in trials:
         dist6.draw()
         win.update()
     
-        clockRT.reset()
+
     
     # start collecting response
 
