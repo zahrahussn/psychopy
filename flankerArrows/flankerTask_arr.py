@@ -1,4 +1,4 @@
-1#from psychopy import *
+#from psychopy import *
 from psychopy import visual, event, core, gui, data
 from psychopy.tools.filetools import fromFile, toFile
 from psychopy.visual import ShapeStim
@@ -18,7 +18,7 @@ if dlg.OK:
 else:
     core.quit()#the user hit cancel so exit
     
-fileName = params['ID number']+'_flanker'+params['computer'] 
+fileName = params['ID number']+'_flankerArrow'+params['computer'] 
 dataFile = open('/home/zahrahussain/Documents/psychopy/data/flankerArrow/Joint EEG data/'+fileName +'.txt', 'a')#a simple text file with 'comma-separated-values'
 dataFile.write('dir, con, response, accuracy, RT\n') 
 
@@ -50,7 +50,6 @@ for dir in [1,2]:
     for con in [1,2]:
         stimList.append({'dir': dir, 'con':con})
 trials = data.TrialHandler(stimList, 15)
-
 trials.data.addDataType('accuracy')
 trials.data.addDataType('RT')
 clockRT = core.Clock() # initialize reaction times
@@ -59,6 +58,7 @@ for thisTrial in trials:
     # set arrow direction depending on trial type
     # target points left
     if trials.thisTrial['dir']==1:
+        corresp=1
         target=targetLeft
         if trials.thisTrial['con']==1:
             arrow2.setOri(0)
@@ -74,6 +74,7 @@ for thisTrial in trials:
     # target points right
     else:
         target=targetRight
+        corresp=2
         if trials.thisTrial['con']==1:
             arrow2.setOri(180)
             arrow3.setOri(180)
@@ -94,6 +95,7 @@ for thisTrial in trials:
 
     # stimulus
 #    for frameN in range(int(round(params['duration']*params['frameRate']))):
+        clockRT.reset()
         target.draw() 
         arrow2.draw()
         arrow3.draw()
@@ -101,7 +103,7 @@ for thisTrial in trials:
         arrow5.draw()
         win.update()
     
-        clockRT.reset()
+
     
     # start collecting response
 
@@ -111,14 +113,14 @@ for thisTrial in trials:
         for thisKey in allKeys:
             if thisKey[0] in ['escape']:core.quit()
             elif thisKey[0] in ['1','2']:
-                if int(thisKey[0]) == int(trials.thisTrial['dir']):
+                if int(thisKey[0]) == corresp:
                     thisResponse=1
                     accuracy = 1
                     corSnd.play()
-            else: 
-                thisResponse=1
-                accuracy = 0
-                incorSnd.play()
+                else: 
+                    thisResponse=1
+                    accuracy = 0
+                    incorSnd.play()
             trials.data.add('accuracy', accuracy)
 
 
