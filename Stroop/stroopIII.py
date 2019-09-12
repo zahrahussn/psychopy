@@ -59,19 +59,15 @@ for thisTrial in trials:
         fixation.draw()
         win.update()
 
-    # show word for 200 ms
-    for frameN in range(int(round(params['duration']*params['frameRate']))):
-        stim.draw() 
-        win.update()
-    
-    # show blank screen for 200 ms
-    for frameN in range(int(round(params['ISI']*params['frameRate']))):
-        win.update()
-            
-    clockRT.reset()
-    # collect response
+    # show word 
     thisResponse = None
     while thisResponse == None:
+        clockRT.reset()
+        stim.draw() 
+        win.update()
+
+    # collect response
+
         allKeys = event.waitKeys(keyList=['escape','1','2','3','4'],timeStamped = clockRT)
         for keyTuple in allKeys:
             [thisKey, thisRT] = keyTuple
@@ -82,10 +78,10 @@ for thisTrial in trials:
                     thisResponse=1
                     accuracy = 1
                     corSnd.play()
-            else: 
-                thisResponse=1
-                accuracy = 0
-                incorSnd.play()
+                else: 
+                    thisResponse=1
+                    accuracy = 0
+                    incorSnd.play()
 
     trials.addData('accuracy', accuracy)        
     trials.addData('RT', thisRT)
