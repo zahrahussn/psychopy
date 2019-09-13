@@ -84,6 +84,7 @@ for thisTrial in trials:
 
     # stimulus
 #    for frameN in range(int(round(params['duration']*params['frameRate']))):
+        clockRT.reset()
         target.draw() 
         arrow2.draw()
         arrow3.draw()
@@ -91,7 +92,7 @@ for thisTrial in trials:
         arrow5.draw()
         win.update()
     
-        clockRT.reset()
+
     
     # start collecting response
 
