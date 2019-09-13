@@ -19,7 +19,7 @@ if dlg.OK:
 else:
     core.quit()#the user hit cancel so exit
 
-fileName = params['ID number']+'_alignedEng'+'_'+params['_computer']
+fileName = params['ID number']+'_alignedEng'+'_'+params['computer']
 dataFile = open('/home/zahrahussain/Documents/psychopy/data/wordComposite/'+fileName+'.txt', 'a')#a simple text file with 'comma-separated-values'
 dataFile.write('word, same, congruent, response, accuracy, RT\n') 
 
