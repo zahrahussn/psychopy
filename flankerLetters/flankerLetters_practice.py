@@ -13,7 +13,7 @@ params = {'ID number':'1',
 	 'frameRate':60, 'ISI': 1, 'fp': 0.5,'task':'flankerLetterTask'}
    
 # create window and stimuli
-win = visual.Window(fullscr=True, allowGUI = True, monitor = 'raylan', units = 'deg')
+win = visual.Window(fullscr=True, allowGUI = True, monitor = 'attentionExperimentsMonitor', units = 'deg')
 win.mouseVisible=False
 targetLeftVert = [(0.1, -0.1),( -0.1, 0), (0.1, 0.1)] 
 targetRightVert = [(-0.1, -0.1),( 0.1, 0), (-0.1, 0.1)] 
@@ -64,6 +64,7 @@ for thisTrial in trials:
 
     # stimulus
 #    for frameN in range(int(round(params['duration']*params['frameRate']))):
+        clockRT.reset()
         targ.draw() 
         dist1.draw()
         dist2.draw()
@@ -73,7 +74,7 @@ for thisTrial in trials:
         dist6.draw()
         win.update()
     
-        clockRT.reset()
+
     
     # start collecting response
 
