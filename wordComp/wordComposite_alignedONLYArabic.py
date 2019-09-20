@@ -19,7 +19,7 @@ if dlg.OK:
 else:
     core.quit()#the user hit cancel so exit
 
-fileName = params['ID number']+'_alignedArb'+'_'+params['_computer']
+fileName = params['ID number']+'_alignedArb'+'_'+params['computer']
 dataFile = open('/home/zahrahussain/Documents/psychopy/data/wordComposite/'+fileName+'.txt', 'a')#a simple text file with 'comma-separated-values'
 dataFile.write('word, same, congruent, response, accuracy, RT\n') 
 
@@ -42,7 +42,7 @@ wordlist2=[u'عريض',u'سارح',u'جميع',u'حقول',u'رجال',u'كفو�
 wordlist3=[u'شريك',u'قاصر',u'مقاس',u'شفاف',u'شمال',u'سخاء',u'كباش',u'صوار',u'خراب',u'عميق']
 wordlist4=[u'شريف',u'قائل',u'مقال',u'شفوق',u'شموع',u'سخيف',u'كبير',u'صواب',u'خروج',u'عميل']
 
-line=visual.Line(win, start=(0.15,2),end=(0.15,-3),lineColor=[-1,-1,-1]) #to draw a vertical line separating the word-halves
+#line=visual.Line(win, start=(0.15,2),end=(0.15,-3),lineColor=[-1,-1,-1]) #to draw a vertical line separating the word-halves
 
 # setup trial handler
 stimList=[]
@@ -83,7 +83,7 @@ for thisTrial in trials:
     # show first word for 200 ms
     for frameN in range(int(round(params['duration']*params['frameRate']))):
         stim_wordleft.draw()
-        line.draw()
+        #line.draw()
         win.update()
     # show frame for 500 ms
     for frameN in range(int(round(params['ISI1']*params['frameRate']))):
@@ -95,7 +95,7 @@ for thisTrial in trials:
     while thisResponse == None:
         clockRT.reset()
         stim_wordright.draw()
-        line.draw()
+        #line.draw()
         win.update()
 
 # collect response
