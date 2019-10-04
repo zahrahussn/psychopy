@@ -19,7 +19,7 @@ if dlg.OK:
 else:
     core.quit()#the user hit cancel so exit
 
-fileName = params['ID number']+'_misaligned&DisconnectedArb'+'_'+params['_computer']
+fileName = params['ID number']+'_misaligned&DisconnectedArb'+'_'+params['computer']
 dataFile = open('/home/zahrahussain/Documents/psychopy/data/wordComposite/'+fileName+'.txt', 'a')#a simple text file with 'comma-separated-values'
 dataFile.write('word, same, congruent, response, accuracy, RT\n') 
 
@@ -55,7 +55,7 @@ wordlist4=[u'شريف',u'قائل',u'مقال',u'شفوق',u'شموع',u'سخي�
 toplist4=[u'شر',u'قا',u'مق',u'شف',u'شم',u'سخ',u'كب',u'صو',u'خر',u'عم']
 
 
-line=visual.Line(win, start=(0,2),end=(0,-3),lineColor=[-1,-1,-1]) #to draw a vertical line separating the word-halves
+#line=visual.Line(win, start=(0,2),end=(0,-3),lineColor=[-1,-1,-1]) #to draw a vertical line separating the word-halves
 
 # setup trial handler
 stimList=[]
@@ -112,7 +112,7 @@ for thisTrial in trials:
     for frameN in range(int(round(params['duration']*params['frameRate']))):
         stim_left1.draw()
         stim_left2.draw()
-        line.draw()
+        #line.draw()
         win.update()
     # show mask for 500 ms
     for frameN in range(int(round(params['ISI1']*params['frameRate']))):
@@ -125,7 +125,7 @@ for thisTrial in trials:
 
         stim_right1.draw()
         stim_right2.draw()
-        line.draw()
+        #line.draw()
         win.update()
     
     
