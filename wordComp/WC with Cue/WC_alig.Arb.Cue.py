@@ -9,7 +9,7 @@ import numpy
 from psychopy import sound
 
 
-params = {'ID number':'tmp3',
+params = {'ID number':'1',
 	 'frameRate':60,'duration':0.3, 'ISI1': 0.2, 'ISI2': 0.5,'fp': 0.5,'task':'wordComposite', 'computer':'raylan'}
 
 dlg = gui.DlgFromDict(params, title='wordComposite', fixed=['dateStr'])
@@ -19,7 +19,7 @@ else:
     core.quit()#the user hit cancel so exit
 
 fileName = params['ID number']+'_alignedArb'+'_'+params['computer']
-dataFile = open(fileName+'.txt', 'a')#a simple text file with 'comma-separated-values'
+dataFile = open('/home/zahrahussain/Documents/psychopy/data/wordComposite/'+fileName+'.txt', 'a')#a simple text file with 'comma-separated-values'
 dataFile.write('word, cue, resp, congruent, subjectResp, accuracy, RT\n') 
 
 # Create a visual window:
