@@ -23,8 +23,8 @@ dataFile = open('/home/zahrahussain/Documents/psychopy/data/wordComposite/'+file
 dataFile.write('word, cue, resp, congruent, subjectResp, accuracy, RT\n') 
 
 # Create a visual window:
-win = visual.Window(fullscr=True, allowGUI = True, monitor = 'testMonitor', units = 'deg')
-#win = visual.Window(fullscr=True, allowGUI = True, monitor = 'attentionExperimentsMonitor', units = 'deg')
+#win = visual.Window(fullscr=True, allowGUI = True, monitor = 'testMonitor', units = 'deg')
+win = visual.Window(fullscr=True, allowGUI = True, monitor = 'attentionExperimentsMonitor', units = 'deg')
 win.mouseVisible=False
 fixation = visual.PatchStim(win, color=-1, tex=None, mask='circle',size=0.2, units='deg')
 #mask=visual.RadialStim(win, tex='sqrXsqr',color=1, size=8,
@@ -46,32 +46,32 @@ cueRight= visual.ShapeStim(win,vertices=cueRightVert,closeShape=False,lineWidth=
 stimSize=2 #size of the text 
 textFont='Courier'
 
-wordlistE=['Arif','Sa2el','Jamal','7okouk','Rojou3','Kafif','Sarir','Jawab','Mourouj','Zamil']
-toplist1=[u'عر',u'سا',u'جم',u'حق',u'رج',u'كف',u'سر',u'جو',u'مر',u'زم']
-bottomlist1=[u'يف',u'ئل',u'ال',u'وق',u'وع',u'يف',u'ير',u'اب',u'وج',u'يل']
+wordlistE=['Arif','Sa2el','Jamal','Jawab','Zamil']
+toplist1=[u'عر',u'سا',u'جم',u'جو',u'زم']
+bottomlist1=[u'يف',u'ئل',u'ال',u'اب',u'يل']
 
-bottomlist2=[u'يض',u'رح',u'يع',u'ول',u'ال',u'وء',u'يع',u'اد',u'يب',u'ان']
+bottomlist2=[u'يض',u'رح',u'يع',u'اد',u'ان']
 
-bottomlist3=[u'يك',u'صر',u'اس',u'اف',u'ال',u'اء',u'اش',u'ار',u'اب',u'يق']
+bottomlist3=[u'يك',u'صر',u'اس',u'ار',u'يق']
 
-wordlist1=[u'عريف',u'سائل', u'جمال', u'حقوق',u'رجوع',u'كفيف', u'سرير', u'جواب', u'مروج',u'زميل']
-wordlist2=[u'عريض',u'سارح',u'جميع',u'حقول',u'رجال',u'كفوء',u'سريع',u'جواد',u'مريب',u'زمان']
-wordlist3=[u'شريك',u'قاصر',u'مقاس',u'شفاف',u'شمال',u'سخاء',u'كباش',u'صوار',u'خراب',u'عميق']
-wordlist4=[u'شريف',u'قائل',u'مقال',u'شفوق',u'شموع',u'سخيف',u'كبير',u'صواب',u'خروج',u'عميل']
+wordlist1=[u'عريف',u'سائل', u'جمال', u'جواب', u'زميل']
+wordlist2=[u'عريض',u'سارح',u'جميع',u'جواد',u'زمان']
+wordlist3=[u'شريك',u'قاصر',u'مقاس',u'صوار',u'عميق']
+wordlist4=[u'شريف',u'قائل',u'مقال',u'صواب',u'عميل']
 
-toplist4=[u'شر',u'قا',u'مق',u'شف',u'شم',u'سخ',u'كب',u'صو',u'خر',u'عم']
+toplist4=[u'شر',u'قا',u'مق',u'صو',u'عم']
 
 
 line=visual.Line(win, start=(0,2),end=(0,-3),lineColor=[-1,-1,-1]) #to draw a vertical line separating the word-halves
 
 # setup trial handler
 stimList=[]
-for word in range(0,10): #This will yield 10 words NOT 11
+for word in range(0,5): #This will yield 10 words NOT 11
     for cue in ['left', 'right']: # left right
         for resp in ['same', 'different']: # same different
            for cong in ['congruent', 'incongruent']: # congruent incongruent
             stimList.append({'cue': cue, 'resp': resp, 'cong': cong, 'word': word})
-trials = data.TrialHandler(stimList, 1)
+trials = data.TrialHandler(stimList, 5)
 trials.data.addDataType('accuracy')
 trials.data.addDataType('RT')
 clockRT = core.Clock() 

@@ -23,8 +23,8 @@ dataFile = open('/home/zahrahussain/Documents/psychopy/data/wordComposite/'+file
 dataFile.write('word, cue, resp, congruent, subjectResp, accuracy, RT\n') 
 
 # Create a visual window:
-win = visual.Window(fullscr=True, allowGUI = True, monitor = 'testMonitor', units = 'deg')
-#win = visual.Window(fullscr=True, allowGUI = True, monitor = 'attentionExperimentsMonitor', units = 'deg')
+#win = visual.Window(fullscr=True, allowGUI = True, monitor = 'testMonitor', units = 'deg')
+win = visual.Window(fullscr=True, allowGUI = True, monitor = 'attentionExperimentsMonitor', units = 'deg')
 win.mouseVisible=False
 fixation = visual.PatchStim(win, color=-1, tex=None, mask='circle',size=0.2, units='deg')
 #mask=visual.RadialStim(win, tex='sqrXsqr',color=1, size=8,
@@ -46,25 +46,25 @@ cueRight= visual.ShapeStim(win,vertices=cueRightVert,closeShape=False,lineWidth=
 stimSize=2 #size of the text 
 textFont='Courier'
 
-wordlist1=['basket', 'reward', 'coffin', 'active', 'bonbon', 'couple', 'legend', 'revive', 'middle', 'divide']
+wordlist1=['basket','reward','active','couple','divide']
 
-toplist1=['bas','rew','cof','act','bon','cou','leg','rev','mid','div']
-bottomlist1=['ket','ard','fin','ive','bon','ple','end','ive','dle','ide']
-bottomlist2=['ics','ind','fee','ors','net','pon','ion','oke','get','ine']
-toplist2=['mar','cow','muf','nat','car','tem','att','mot','can','res']
-bottomlist3=['ble','boy','fle','ure','eer','per','ack','ion','cer','ume']
+toplist1=['bas','rew','act','cou','div']
+bottomlist1=['ket','ard','ive','ple','ide']
+bottomlist2=['ics','ind','ors','pon','ine']
+toplist2=['mar','cow','nat','tem','res']
+bottomlist3=['ble','boy','ure','per','ume']
 
 
 line=visual.Line(win, start=(0,2),end=(0,-3),lineColor=[-1,-1,-1]) #to draw a vertical line separating the word-halves
 
 # setup trial handler
 stimList=[]
-for word in range(0,10): #This will yield 10 words NOT 11
+for word in range(0,5): #This will yield 10 words NOT 11
     for cue in ['left', 'right']: # left right
         for resp in ['same', 'different']: # same different
            for cong in ['congruent', 'incongruent']: # congruent incongruent
             stimList.append({'cue': cue, 'resp': resp, 'cong': cong, 'word': word})
-trials = data.TrialHandler(stimList, 1)
+trials = data.TrialHandler(stimList, 5)
 trials.data.addDataType('accuracy')
 trials.data.addDataType('RT')
 clockRT = core.Clock() 
