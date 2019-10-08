@@ -46,27 +46,27 @@ cueRight= visual.ShapeStim(win,vertices=cueRightVert,closeShape=False,lineWidth=
 stimSize=2 #size of the text 
 textFont='Courier'
 
-wordlistE=['Arif','Sa2el','Jamal','Jawab','Zamil']
-toplist1=[u'عر',u'سا',u'جمـ',u'جو',u'زمـ']
-bottomlist1=[u'يف',u'ئل',u'ـال',u'اب',u'ـيل']
+wordlistE=['Arif','Sa2el','Jamal','Jawab','Mourouj','Zamil']
+toplist1=[u'عر',u'سا',u'جمـ',u'جو',u'مر',u'زمـ']
+bottomlist1=[u'يف',u'ئل',u'ـال',u'اب',u'وج',u'ـيل']
 
-bottomlist2=[u'يض',u'رح',u'ـيع',u'اد',u'ـان']
+bottomlist2=[u'يض',u'رح',u'ـيع',u'اد',u'يب',u'ـان']
 
-bottomlist3=[u'ـيك',u'صر',u'ـاس',u'ار',u'ـيق']
+bottomlist3=[u'ـيك',u'صر',u'ـاس',u'ار',u'اب',u'ـيق']
 
-wordlist1=[u'عريف',u'سائل', u'جمال',  u'جواب',u'زميل']
+wordlist1=[u'عريف',u'سائل', u'جمال', u'جواب',u'زميل']
 wordlist2=[u'عريض',u'سارح',u'جميع',u'جواد',u'زمان']
-wordlist3=[u'شريك',u'قاصر',u'مقاس',,u'صوار',u'عميق']
+wordlist3=[u'شريك',u'قاصر',u'مقاس',u'صوار',u'عميق']
 wordlist4=[u'شريف',u'قائل',u'مقال',u'صواب',u'عميل']
 
-toplist4=[u'شر',u'قا',u'مقـ',u'صو',u'عمـ']
+toplist4=[u'شر',u'قا',u'مقـ',u'صو',u'خر',u'عمـ']
 
 
 line=visual.Line(win, start=(0,2),end=(0,-3),lineColor=[-1,-1,-1]) #to draw a vertical line separating the word-halves
 
 # setup trial handler
 stimList=[]
-for word in range(0,5): #This will yield 10 words NOT 11
+for word in range(0,6): #This will yield 10 words NOT 11
     for cue in ['left', 'right']: # left right
         for resp in ['same', 'different']: # same different
            for cong in ['congruent', 'incongruent']: # congruent incongruent

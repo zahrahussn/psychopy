@@ -45,16 +45,16 @@ cueRight= visual.ShapeStim(win,vertices=cueRightVert,closeShape=False,lineWidth=
 
 stimSize=2 #size of the text 
 textFont='Courier'
-wordlist1=['basket', 'reward','active','couple','divide']
-wordlist2=['basics','rewind','actors','coupon','divine']
-wordlist3=['marble','cowboy','nature','temper','resume']
-wordlist4=['market','coward','native','temple','reside']
+wordlist1=['basket', 'reward','active','couple','legend','divide']
+wordlist2=['basics','rewind','actors','coupon','legion','divine']
+wordlist3=['marble','cowboy','nature','temper','attack','resume']
+wordlist4=['market','coward','native','temple','attend','reside']
 
 line=visual.Line(win, start=(0,2),end=(0,-3),lineColor=[-1,-1,-1]) #to draw a vertical line separating the word-halves
 
 # setup trial handler
 stimList=[]
-for word in range(0,5): #This will yield 10 words NOT 11
+for word in range(0,6): #This will yield 10 words NOT 11
     for cue in ['left', 'right']: # left right
         for resp in ['same', 'different']: # same different
            for cong in ['congruent', 'incongruent']: # congruent incongruent

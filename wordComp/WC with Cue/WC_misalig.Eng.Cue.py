@@ -46,20 +46,20 @@ cueRight= visual.ShapeStim(win,vertices=cueRightVert,closeShape=False,lineWidth=
 stimSize=2 #size of the text 
 textFont='Courier'
 
-wordlist1=['basket','reward','active','couple','divide']
+wordlist1=['basket','reward','active','couple','legend','divide']
 
-toplist1=['bas','rew','act','cou','div']
-bottomlist1=['ket','ard','ive','ple','ide']
-bottomlist2=['ics','ind','ors','pon','ine']
-toplist2=['mar','cow','nat','tem','res']
-bottomlist3=['ble','boy','ure','per','ume']
+toplist1=['bas','rew','act','cou','leg','div']
+bottomlist1=['ket','ard','ive','ple','end','ide']
+bottomlist2=['ics','ind','ors','pon','ion','ine']
+toplist2=['mar','cow','nat','tem','att','res']
+bottomlist3=['ble','boy','ure','per','ack','ume']
 
 
 line=visual.Line(win, start=(0,2),end=(0,-3),lineColor=[-1,-1,-1]) #to draw a vertical line separating the word-halves
 
 # setup trial handler
 stimList=[]
-for word in range(0,5): #This will yield 10 words NOT 11
+for word in range(0,6): #This will yield 10 words NOT 11
     for cue in ['left', 'right']: # left right
         for resp in ['same', 'different']: # same different
            for cong in ['congruent', 'incongruent']: # congruent incongruent
