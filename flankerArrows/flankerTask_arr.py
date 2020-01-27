@@ -1,4 +1,4 @@
-#from psychopy import *
+from psychopy import *
 from psychopy import visual, event, core, gui, data
 from psychopy.tools.filetools import fromFile, toFile
 from psychopy.visual import ShapeStim
@@ -18,7 +18,7 @@ if dlg.OK:
 else:
     core.quit()#the user hit cancel so exit
     
-fileName = params['ID number']+'_flankerArrow'+params['computer'] 
+fileName = params['ID number']+'_flankerArrow' 
 dataFile = open('/home/zahrahussain/Documents/psychopy/data/flankerArrow/Joint EEG data/'+fileName +'.txt', 'a')#a simple text file with 'comma-separated-values'
 dataFile.write('dir, con, response, accuracy, RT\n') 
 

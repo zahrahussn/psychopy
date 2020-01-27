@@ -14,7 +14,7 @@ import numpy
 from psychopy import sound
 
 params = {'ID number':'1',
-	 'frameRate':60,'duration':0.08, 'ISI': 0.03, 'fp': 1,'task':'T1_T2-V2', 'computer':'raylan'}
+	 'frameRate':60,'duration':0.08, 'ISI': 0.03, 'fp': 1,'task':'T1_T2', 'computer':'raylan'}
 
 
 dlg = gui.DlgFromDict(params, title='T1_T2-V2', fixed=['dateStr'])
@@ -24,7 +24,7 @@ else:
 
     core.quit()#the user hit cancel so exit
     
-fileName = params['ID number']+'_'+params['task']+'_'+params['computer'] 
+fileName = params['ID number']+'_'+params['task'] 
 dataFile = open('/home/zahrahussain/Documents/psychopy/data/attentionalBlink/Joint EEG data/'+fileName+'.txt', 'a')
 dataFile.write('lag, T1, T1resp, correct1, T2, T2resp, correct2\n') 
     

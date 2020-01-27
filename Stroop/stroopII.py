@@ -17,7 +17,7 @@ if dlg.OK:
 else:
     core.quit()#the user hit cancel so exit
     
-fileName = params['ID number']+'_s2'+'_'+params['computer']
+fileName = params['ID number']+'_s2'
 dataFile = open('/home/zahrahussain/Documents/psychopy/data/stroop/Joint EEG data/'+fileName+'.txt', 'a')#a simple text file with 'comma-separated-values'
 dataFile.write('colors, response, accuracy, RT\n') 
 
