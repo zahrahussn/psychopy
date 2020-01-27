@@ -17,7 +17,7 @@ if dlg.OK:
 else:
     core.quit()#the user hit cancel so exit
     
-fileName = params['ID number']+'_flankerLetter'+'_'+ params['computer'] 
+fileName = params['ID number']+'_flankerLetter' 
 dataFile = open('/home/zahrahussain/Documents/psychopy/data/flankerLetter/Joint EEG data/'+fileName +'.txt', 'a')#a simple text file with 'comma-separated-values'
 dataFile.write('target, distractor, congruence,corresp, response, accuracy, RT\n') 
 
