@@ -18,13 +18,14 @@ if dlg.OK:
 else:
     core.quit()#the user hit cancel so exit
 
-fileName = params['ID number']+'_misalignedEng'+'_'+params['computer']
+fileName = params['ID number']+'_misalignedEng'
 dataFile = open('/home/zahrahussain/Documents/psychopy/data/wordComposite/'+fileName+'.txt', 'a')#a simple text file with 'comma-separated-values'
 dataFile.write('word, cue, resp, congruent, subjectResp, accuracy, RT\n') 
 
 # Create a visual window:
 #win = visual.Window(fullscr=True, allowGUI = True, monitor = 'testMonitor', units = 'deg')
-win = visual.Window(fullscr=True, allowGUI = True, monitor = 'attentionExperimentsMonitor', units = 'deg')
+#win = visual.Window(fullscr=True, allowGUI = True, monitor = 'attentionExperimentsMonitor', units = 'deg')
+win = visual.Window(fullscr=True, allowGUI = True, monitor = 'viewPixx', units = 'deg')
 win.mouseVisible=False
 fixation = visual.PatchStim(win, color=-1, tex=None, mask='circle',size=0.2, units='deg')
 #mask=visual.RadialStim(win, tex='sqrXsqr',color=1, size=8,
@@ -129,7 +130,8 @@ for thisTrial in trials:
                 word2_left=visual.TextStim(win, text=bottomlist2[trials.thisTrial.word], color =(-1,-1,-1), pos=[x2,y2],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
 
     stim=wordlist1[trials.thisTrial.word]        
-    g=numpy.random.random_integers(0,1) #to choose which of the word pairs will be a target and which will be the study word. 
+    #g=numpy.random.random_integers(0,1) #to choose which of the word pairs will be a target and which will be the study word. 
+    g=numpy.random.randint(0,1+1) #to choose which of the word pairs will be a target and which will be the study word. 
     
     if g == 1: #word1 will be the study and word 2 will be the target
         stim1_right = word1_right

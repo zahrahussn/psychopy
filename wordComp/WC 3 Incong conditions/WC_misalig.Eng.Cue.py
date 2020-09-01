@@ -18,13 +18,13 @@ if dlg.OK:
 else:
     core.quit()#the user hit cancel so exit
 
-fileName = params['ID number']+'_misalig&discArb'+'_'+params['computer']
-dataFile = open('/home/zahrahussain/Documents/psychopy/data/wordComposite/'+fileName+'.txt', 'a')#a simple text file with 'comma-separated-values'
+fileName = params['ID number']+'_misalignedEng'
+dataFile = open('/home/zahrahussain/Documents/psychopy/data/wordComposite/Summer2020/'+fileName+'.txt', 'a')#a simple text file with 'comma-separated-values'
 dataFile.write('word, cue, resp, congruent, subjectResp, accuracy, RT\n') 
 
 # Create a visual window:
 #win = visual.Window(fullscr=True, allowGUI = True, monitor = 'testMonitor', units = 'deg')
-win = visual.Window(fullscr=True, allowGUI = True, monitor = 'attentionExperimentsMonitor', units = 'deg')
+win = visual.Window(fullscr=True, allowGUI = True, monitor = 'viewPixx', units = 'deg')
 win.mouseVisible=False
 fixation = visual.PatchStim(win, color=-1, tex=None, mask='circle',size=0.2, units='deg')
 #mask=visual.RadialStim(win, tex='sqrXsqr',color=1, size=8,
@@ -46,44 +46,37 @@ cueRight= visual.ShapeStim(win,vertices=cueRightVert,closeShape=False,lineWidth=
 stimSize=2 #size of the text 
 textFont='Courier'
 
-wordlistE=['Arif','Sa2el','Jamal','Jawab','Zamil']
-toplist1=[u'عر',u'سا',u'جم',u'جو',u'زم']
-bottomlist1=[u'يف',u'ئل',u'ال',u'اب',u'يل']
+wordlist1=['basket','reward','active','couple','legend','divide']
 
-bottomlist2=[u'يض',u'رح',u'يع',u'اد',u'ان']
-
-bottomlist3=[u'يك',u'صر',u'اس',u'ار',u'يق']
-
-wordlist1=[u'عريف',u'سائل', u'جمال', u'جواب', u'زميل']
-wordlist2=[u'عريض',u'سارح',u'جميع',u'جواد',u'زمان']
-wordlist3=[u'شريك',u'قاصر',u'مقاس',u'صوار',u'عميق']
-wordlist4=[u'شريف',u'قائل',u'مقال',u'صواب',u'عميل']
-
-toplist4=[u'شر',u'قا',u'مق',u'صو',u'عم']
+toplist1=['bas','rew','act','cou','leg','div']
+bottomlist1=['ket','ard','ive','ple','end','ide']
+bottomlist2=['ics','ind','ors','pon','ion','ine']
+toplist2=['mar','cow','nat','tem','att','res']
+bottomlist3=['ble','boy','ure','per','ack','ume']
 
 
 line=visual.Line(win, start=(0,2),end=(0,-3),lineColor=[-1,-1,-1]) #to draw a vertical line separating the word-halves
 
 # setup trial handler
 stimList=[]
-for word in range(0,5): #This will yield 10 words NOT 11
+for word in range(0,6): #This will yield 10 words NOT 11
     for cue in ['left', 'right']: # left right
         for resp in ['same', 'different']: # same different
            for cong in ['congruent', 'incongruent']: # congruent incongruent
             stimList.append({'cue': cue, 'resp': resp, 'cong': cong, 'word': word})
-trials = data.TrialHandler(stimList, 5)
+trials = data.TrialHandler(stimList, 4)
 trials.data.addDataType('accuracy')
 trials.data.addDataType('RT')
 clockRT = core.Clock() 
 
 for thisTrial in trials:
 
-    x1=+1.75
+    x1=-1.75
     y1=0
-    x2=-1.75
+    x2=1.75
     y2=-1
-    if trials.thisTrial.cue=='right': #if right is target
-        cue=cueRight
+    if trials.thisTrial.cue=='left': #if left is target
+        cue=cueLeft
         if trials.thisTrial.resp=='same': # if same trial
             corresp=1 # correct response = 1
             if trials.thisTrial.cong=='congruent': # if congruent trial
@@ -100,16 +93,16 @@ for thisTrial in trials:
             corresp=2 # correct response =2
             if trials.thisTrial.cong==1: # if different-congruent trial
                 word1_right= visual.TextStim(win, text=toplist1[trials.thisTrial.word], color =(-1,-1,-1), pos=[x1,y1],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
-                word2_right= visual.TextStim(win, text=toplist4[trials.thisTrial.word], color =(-1,-1,-1), pos=[x1,y1],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
+                word2_right= visual.TextStim(win, text=toplist2[trials.thisTrial.word], color =(-1,-1,-1), pos=[x1,y1],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
                 word1_left=visual.TextStim(win, text=bottomlist1[trials.thisTrial.word], color =(-1,-1,-1), pos=[x2,y2],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
                 word2_left=visual.TextStim(win, text=bottomlist3[trials.thisTrial.word], color =(-1,-1,-1), pos=[x2,y2],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
             else: # if different-incongruent/misaligned trial
                 word1_right= visual.TextStim(win, text=toplist1[trials.thisTrial.word], color =(-1,-1,-1), pos=[x1,y1],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
-                word2_right= visual.TextStim(win, text=toplist4[trials.thisTrial.word], color =(-1,-1,-1), pos=[x1,y1],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
+                word2_right= visual.TextStim(win, text=toplist2[trials.thisTrial.word], color =(-1,-1,-1), pos=[x1,y1],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
                 word1_left=visual.TextStim(win, text=bottomlist1[trials.thisTrial.word], color =(-1,-1,-1), pos=[x2,y2],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
                 word2_left=visual.TextStim(win, text=bottomlist1[trials.thisTrial.word], color =(-1,-1,-1), pos=[x2,y2],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
-    else: # left target
-        cue=cueLeft
+    else: # right target
+        cue=cueRight
         if trials.thisTrial.resp=='same': # if same trial
             corresp=1 # correct response = 1
             if trials.thisTrial.cong=='congruent': # if congruent trial
@@ -119,14 +112,14 @@ for thisTrial in trials:
                 word2_left=visual.TextStim(win, text=bottomlist1[trials.thisTrial.word], color =(-1,-1,-1), pos=[x2,y2],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
             else: # if same-incongruent/misaligned trial
                 word1_right= visual.TextStim(win, text=toplist1[trials.thisTrial.word], color =(-1,-1,-1), pos=[x1,y1],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
-                word2_right= visual.TextStim(win, text=toplist4[trials.thisTrial.word], color =(-1,-1,-1), pos=[x1,y1],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
+                word2_right= visual.TextStim(win, text=toplist2[trials.thisTrial.word], color =(-1,-1,-1), pos=[x1,y1],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
                 word1_left=visual.TextStim(win, text=bottomlist1[trials.thisTrial.word], color =(-1,-1,-1), pos=[x2,y2],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
                 word2_left=visual.TextStim(win, text=bottomlist1[trials.thisTrial.word], color =(-1,-1,-1), pos=[x2,y2],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
         else: # if 'different' top/misaligned trial
             corresp=2 # incorrect response =2
             if trials.thisTrial.cong==1: # if different-congruent trial
                 word1_right= visual.TextStim(win, text=toplist1[trials.thisTrial.word], color =(-1,-1,-1), pos=[x1,y1],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
-                word2_right= visual.TextStim(win, text=toplist4[trials.thisTrial.word], color =(-1,-1,-1), pos=[x1,y1],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
+                word2_right= visual.TextStim(win, text=toplist2[trials.thisTrial.word], color =(-1,-1,-1), pos=[x1,y1],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
                 word1_left=visual.TextStim(win, text=bottomlist1[trials.thisTrial.word], color =(-1,-1,-1), pos=[x2,y2],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
                 word2_left=visual.TextStim(win, text=bottomlist3[trials.thisTrial.word], color =(-1,-1,-1), pos=[x2,y2],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
             else: # if different-incongruent/misaligned trial
@@ -135,8 +128,9 @@ for thisTrial in trials:
                 word1_left=visual.TextStim(win, text=bottomlist1[trials.thisTrial.word], color =(-1,-1,-1), pos=[x2,y2],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
                 word2_left=visual.TextStim(win, text=bottomlist2[trials.thisTrial.word], color =(-1,-1,-1), pos=[x2,y2],font=textFont, height=stimSize, units='deg', languageStyle='Arabic')
 
-    stim=wordlistE[trials.thisTrial.word]        
-    g=numpy.random.random_integers(0,1) #to choose which of the word pairs will be a target and which will be the study word. 
+    stim=wordlist1[trials.thisTrial.word]        
+    #g=numpy.random.random_integers(0,1) #to choose which of the word pairs will be a target and which will be the study word. 
+    g=numpy.random.randint(0,1+1) #to choose which of the word pairs will be a target and which will be the study word. 
     
     if g == 1: #word1 will be the study and word 2 will be the target
         stim1_right = word1_right
