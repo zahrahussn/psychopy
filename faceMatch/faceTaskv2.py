@@ -30,7 +30,7 @@ fixation = visual.PatchStim(win, color=-1, tex=None, mask='cross',size=1.0 ,unit
 
 #Feedback sounds 
 corSnd = sound.Sound(1800, octave=14, secs=0.01) 
-incorSnd = sound.Sound(800, octave=7, secs=0.01)
+incorSnd = sound.Sound(700, octave=7, secs=0.01)
 
 facePath='Stimuli/' #Retriever face stimuli from the Stimuli folder with their respective numbers, 5 male 5 female
 imageM=[os.path.join(facePath+'M1'),os.path.join(facePath+'M2'),os.path.join(facePath+'M3'),os.path.join(facePath+'M4'),os.path.join(facePath+'M5')]
