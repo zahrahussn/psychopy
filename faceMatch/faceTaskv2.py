@@ -17,15 +17,15 @@ if dlg.OK:
 else:
     core.quit()#the user hit cancel so exit
 
-fileName = 'data/FaceMatch'+params['ID number']+'_FaceMatch'     #Accessing data file to record data
+fileName = 'data/FaceMatch'+params['ID number']+'_FaceMatchV2'     #Accessing data file to record data
 dataFile = open(fileName+'.txt', 'a')
-dataFile.write('nTrials, trials.thisTrial.image, trials.thisTrial.field, thisResponse, accuracy, RT')    #Data file listing #Is this enough to create a data file?
+dataFile.write('nTrials, trials.thisTrial.image, visfield, thisResponse, accuracy, RT\n')    #Data file listing #Is this enough to create a data file?
 
-win = visual.Window(fullscr=True, allowGUI= True, monitor = 'testMonitor', units = 'deg')
+win = visual.Window(fullscr=True, allowGUI= True, monitor = 'viewPixx', units = 'deg')
 #Graphic User Interface True
 win.mouseVisible=True #mouse is visible
 
-fixation = visual.PatchStim(win, color=-1, tex=None, mask='cross',size=1.0 ,units='deg')
+fixation = visual.PatchStim(win, color=-1, tex=None, mask='cross',size=0.5 ,units='deg')
 #win means in window, color is black, no text, mask is cross, size is 1.0, units in degrees,
 
 #Feedback sounds 
@@ -39,22 +39,21 @@ imageF=[os.path.join(facePath+'F1'),os.path.join(facePath+'F2'),os.path.join(fac
 distPath='Distractor/' #Retrieving distractors from Distractor folder with their respective numbers
 imageDist=[os.path.join(distPath+'D1'),os.path.join(distPath+'D2'),os.path.join(distPath+'D3'),os.path.join(distPath+'D4'),os.path.join(distPath+'D5'),os.path.join(distPath+'D6'),os.path.join(distPath+'D7'),os.path.join(distPath+'D8'),os.path.join(distPath+'D9'),os.path.join(distPath+'D10')]
 
-faceWidth=6.5
-faceHeight=6.5
+faceWidth=4.2
+faceHeight=4.2
 faceSize=(faceWidth,faceHeight)
-posLVF=((-3.5-faceWidth/2),0)      
-posRVF=((3.5+faceWidth/2),0)
+posLVF=((-2.5-faceWidth/2),0)      
+posRVF=((2.5+faceWidth/2),0)
 
 #Gaussian noise mask
 noiseTexture = numpy.random.rand(128, 128) * 2.0 - 1
-maskRight = visual.GratingStim(win, tex=noiseTexture, size=(6.5,6.5),pos=posRVF, units='deg', interpolate=False, autoLog=False)
-maskLeft= visual.GratingStim(win, tex=noiseTexture,size=(6.5, 6.5), pos=posLVF, units='deg', interpolate=False, autoLog=False) #do we have 
-
+maskRight = visual.GratingStim(win, tex=noiseTexture, size=(3.2,3.2),pos=posRVF, units='deg', interpolate=False, autoLog=False)
+maskLeft= visual.GratingStim(win, tex=noiseTexture,size=(3.2, 3.2), pos=posLVF, units='deg', interpolate=False, autoLog=False) #do we have 
 
 #Draws a rectangular cue for face presentation
-cueVertices = [[(-.09,-.09),(-.09,.09),(.09,.09),(.09,-.09)],[(-.091,-.091),(-.091,.091),(.091,.091),(.091,-.091)]]
-cueRight = ShapeStim(win, vertices=cueVertices, units='deg', fillColor='red', lineWidth=0.05, size=37, pos=posRVF)
-cueLeft = ShapeStim(win, vertices=cueVertices, units='deg', fillColor='red', lineWidth=0.05, size=37, pos=posLVF)
+cueVertices = [[(-.09,-.09),(-.09,.09),(.09,.09),(.09,-.09)],[(-.092,-.092),(-.092,.092),(.092,.092),(.092,-.092)]]
+cueRight = ShapeStim(win, vertices=cueVertices, units='deg', fillColor='red', lineWidth=0, size=37, pos=posRVF)
+cueLeft = ShapeStim(win, vertices=cueVertices, units='deg', fillColor='red', lineWidth=0, size=37, pos=posLVF)
 
 #Trial Handler randomizes and puts things in sequence the way you want them to be
 stimList=[]
@@ -62,7 +61,7 @@ for image in range (0,len(imageM)):    #len is length. images picked from 0 to l
     for field in [0,1]: # 2 conditions RVF and LVF (Should it be counterbalanced(M and F 50%?)) (Does gender matter, putting all in one list)
         for gender in [0,1]: 
             stimList.append({'gender':gender, 'field':field, 'image':image}) # setting trial sequence,gender for gender, field for visual field, images of course
-trials = data.TrialHandler(stimList, 5) #Changed because she needs 100 trials. 5x20 is 100
+trials = data.TrialHandler(stimList, 1) #Changed because she needs 100 trials. 5x20 is 100
 trials.data.addDataType('RT')
 trials.data.addDataType('response') #no need for repetition time if we already specified (ask)
 trials.data.addDataType('accuracy')                 #Do we add this here?
@@ -96,6 +95,7 @@ for thisTrial in trials: #Records the trials that are happening with this partic
 
     if trials.thisTrial.field==1: #  LVF trial 
         position=posLVF 
+        visfield='L'
         distRight = visual.ImageStim(win, image=imageDist[trials.thisTrial.image]+'.jpg', pos=posRVF,size=faceSize) #defining and retrieving distractor for RVF
         dist=distRight
         cue=cueLeft
@@ -103,6 +103,7 @@ for thisTrial in trials: #Records the trials that are happening with this partic
         IM_location='LVF' #IM is basically images all
     else: # RVF 
         position=posRVF
+        visfield='R'
         distLeft = visual.ImageStim(win, image=imageDist[trials.thisTrial.image]+'.jpg', pos=posLVF,size=faceSize)
         dist=distLeft
         cue=cueRight
@@ -114,11 +115,11 @@ for thisTrial in trials: #Records the trials that are happening with this partic
     # prepare face choice screen
     # randomize the positions
     # facestimulus 1 specify then add draw. 10 different images so 10 different lines. 
-    xcords=[-15,-7.5,0,7.5,15,-15,-7.5,0,7.5,15] #adding coordinates for the face selection screen. 10 elements each list.
-    ycords=[7,7,7,7,7,-7,-7,-7,-7,-7] 
+    xcords=[-10,-5,0,5,10,-10,5,0,5,10] #adding coordinates for the face selection screen. 10 elements each list.
+    ycords=[5,5,5,5,5,-5,-5,-5,-5,-5] 
     
-    faceWidthChoice=4.5
-    faceHeightChoice=4.5
+    faceWidthChoice=3
+    faceHeightChoice=3
     faceSizeChoice=(faceWidthChoice,faceHeightChoice) 
     
     faceStimuluslist=[]
@@ -165,6 +166,7 @@ for thisTrial in trials: #Records the trials that are happening with this partic
         buttons, RTs = myMouse.getPressed(getTime=True)
         if buttons[0]:  #left mouse click (0 is left click) (enters only if left mouse clicked)
             clickcoords=(myMouse.getPos()/2) #Again, we don't understand the reason behind coordinates doubling. Used this as a solution. This is specific for the version 2021.2.3.  
+            print("click at [%.2f,%.2f]"% (myMouse.getPos()[0],myMouse.getPos()[1]))
             myMouse.clickReset()
             thisResponse=1
             

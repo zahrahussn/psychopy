@@ -9,7 +9,7 @@ import string, time
 
 variable=''
 params = {'ID number':'1', 'lang':'eng',
-	 'frameRate':60,'duration':0.3,'maskduration':0.1,'blankduration':0.2,'response': 1.0, 'fp': 1.0,'task':'FaceMatch'}
+	 'frameRate':60,'duration':0.2,'maskduration':0.1,'blankduration':0.2,'response': 1.0, 'fp': 1.0,'task':'FaceMatch'}
 
 dlg = gui.DlgFromDict(params, title='Face Match v1', fixed=['dateStr'])
 if dlg.OK:
@@ -17,9 +17,9 @@ if dlg.OK:
 else:
     core.quit()#the user hit cancel so exit
 
-fileName = 'data/FaceMatch'+params['ID number']+'_FaceMatch'     #Accessing data file to record data
+fileName = 'data/FaceMatch'+params['ID number']+'_FaceMatchV1'     #Accessing data file to record data
 dataFile = open(fileName+'.txt', 'a')
-dataFile.write('nTrials, imagefileName, trials.thisTrial.field, thisResponse, accuracy, RT')   #Data file listing #Is this enough to create a data file?
+dataFile.write('nTrials, imagefileName, visfield,  Response, accuracy, RT\n')   #Data file listing #Is this enough to create a data file?
 #if os.path.exists(fileName+'.txt')
 #    ii=1
 #    while True:
@@ -29,11 +29,11 @@ dataFile.write('nTrials, imagefileName, trials.thisTrial.field, thisResponse, ac
 #       break 
 #    ii += 1
 
-win = visual.Window(fullscr=True, allowGUI= True, monitor = 'testMonitor', units = 'deg')
+win = visual.Window(fullscr=True, allowGUI= True, monitor = 'viewPixx', units = 'deg')
 #Graphic User Interface True
 win.mouseVisible=True #mouse is visible
 
-fixation = visual.PatchStim(win, color=-1, tex=None, mask='cross',size=1.0 ,units='deg')
+fixation = visual.PatchStim(win, color=-1, tex=None, mask='cross',size=0.5 ,units='deg')
 #win means in window, color is black, no text, mask is cross, size is 1.0, units in degrees,
 
 #Feedback sounds 
@@ -44,8 +44,8 @@ facePath='Stimuli/' #Retrieve faces stimuli from the Stimuli folder with their r
 imageM=[os.path.join(facePath+'M1'),os.path.join(facePath+'M2'),os.path.join(facePath+'M3'),os.path.join(facePath+'M4'),os.path.join(facePath+'M5')]
 imageF=[os.path.join(facePath+'F1'),os.path.join(facePath+'F2'),os.path.join(facePath+'F3'),os.path.join(facePath+'F4'),os.path.join(facePath+'F5')]
 
-faceWidth=6.5
-faceHeight=6.5
+faceWidth=4.2
+faceHeight=4.2
 faceSize=(faceWidth,faceHeight)
 posLVF=((-2.5-faceWidth/2),0)      
 posRVF=((2.5+faceWidth/2),0)
@@ -96,10 +96,12 @@ for thisTrial in trials: #Records the trials that are happening with this partic
 
     if trials.thisTrial.field==1: #  LVF trial 
         position=posLVF 
+        visfield='L'
         IM_location='LVF' #IM is basically images all
         mask=maskLeft
     else: # RVF 
         position=posRVF
+        visfield='R'
         IM_location='RVF'
         mask=maskRight
 
@@ -108,11 +110,11 @@ for thisTrial in trials: #Records the trials that are happening with this partic
     # prepare face choice screen
     # randomize the positions
     # facestimulus 1 specify then add draw. 10 different images so 10 different lines. 
-    xcords=[-15,-7.5,0,7.5,15,-15,-7.5,0,7.5,15] #adding coordinates for the face selection screen. 10 elements each list.
-    ycords=[7,7,7,7,7,-7,-7,-7,-7,-7] 
+    xcords=[-10,-5,0,5,10,-10,-5,0,5,10] #adding coordinates for the face selection screen. 10 elements each list.
+    ycords=[5,5,5,5,5,-5,-5,-5,-5,-5] 
     
-    faceWidthChoice=4.5
-    faceHeightChoice=4.5
+    faceWidthChoice=3
+    faceHeightChoice=3
     faceSizeChoice=(faceWidthChoice,faceHeightChoice) 
     
     faceStimuluslist=[]
@@ -157,6 +159,7 @@ for thisTrial in trials: #Records the trials that are happening with this partic
         buttons, RTs = myMouse.getPressed(getTime=True)
         if buttons[0]:  #left mouse click (0 is left click) (enters only if left mouse clicked)
             clickcoords=(myMouse.getPos()/2) #Again, we don't understand the reason behind coordinates doubling. Used this as a solution. This is specific for the version 2021.2.3.  
+#            print("click at [%.2f,%.2f]"% (myMouse.getPos()[0],myMouse.getPos()[1]))
             thisResponse=1
             minimumdistance=10000 #Defining minimum distance variable for upcoming for loop 
             
@@ -173,7 +176,7 @@ for thisTrial in trials: #Records the trials that are happening with this partic
             else:
                 accuracy=0
                 incorSnd.play()
-    dataFile.write('%d\t%s\t%s\t%s\t%s\t%s\n' %(nTrials, imagefileName, trials.thisTrial.field, response, accuracy, RTs[0]))
+    dataFile.write('%d\t%s\t%s\t%s\t%s\t%s\n' %(nTrials, imagefileName, visfield, response, accuracy, RTs[0]))
 
 event.clearEvents()
 
