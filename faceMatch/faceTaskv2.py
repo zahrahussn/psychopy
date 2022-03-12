@@ -9,7 +9,7 @@ import string, time
 
 variable=''
 params = {'ID number':'1', 'lang':'eng',
-	 'frameRate':60,'duration':0.3,'maskduration':0.1,'blankduration':0.2,'response': 1.0, 'fp': 1.0,'task':'FaceMatch'}
+	 'frameRate':60,'duration':2,'maskduration':1,'blankduration':0.2,'response': 1.0, 'fp': 1.0,'task':'FaceMatch'}
 
 dlg = gui.DlgFromDict(params, title='Face Match v2', fixed=['dateStr'])
 if dlg.OK:
@@ -19,9 +19,10 @@ else:
 
 fileName = 'data/FaceMatch'+params['ID number']+'_FaceMatchV2'     #Accessing data file to record data
 dataFile = open(fileName+'.txt', 'a')
-dataFile.write('nTrials, trials.thisTrial.image, visfield, thisResponse, accuracy, RT\n')    #Data file listing #Is this enough to create a data file?
+dataFile.write('nTrials, imageFileName,imageDistTrial, visfield, thisResponse, accuracy, RT\n')    #Data file listing #Is this enough to create a data file?
 
-win = visual.Window(fullscr=True, allowGUI= True, monitor = 'viewPixx', units = 'deg')
+#win = visual.Window(fullscr=True, allowGUI= True, monitor = 'viewPixx', units = 'deg')
+win = visual.Window(fullscr=True, allowGUI= True, monitor = 'testMonitor', units = 'deg')
 #Graphic User Interface True
 win.mouseVisible=True #mouse is visible
 
@@ -47,13 +48,13 @@ posRVF=((2.5+faceWidth/2),0)
 
 #Gaussian noise mask
 noiseTexture = numpy.random.rand(128, 128) * 2.0 - 1
-maskRight = visual.GratingStim(win, tex=noiseTexture, size=(3.2,3.2),pos=posRVF, units='deg', interpolate=False, autoLog=False)
-maskLeft= visual.GratingStim(win, tex=noiseTexture,size=(3.2, 3.2), pos=posLVF, units='deg', interpolate=False, autoLog=False) #do we have 
+maskRight = visual.GratingStim(win, tex=noiseTexture, size=(4.2,4.2),pos=posRVF, units='deg', interpolate=False, autoLog=False)
+maskLeft= visual.GratingStim(win, tex=noiseTexture,size=(4.2, 4.2), pos=posLVF, units='deg', interpolate=False, autoLog=False) #do we have 
 
 #Draws a rectangular cue for face presentation
 cueVertices = [[(-.09,-.09),(-.09,.09),(.09,.09),(.09,-.09)],[(-.092,-.092),(-.092,.092),(.092,.092),(.092,-.092)]]
-cueRight = ShapeStim(win, vertices=cueVertices, units='deg', fillColor='red', lineWidth=0, size=37, pos=posRVF)
-cueLeft = ShapeStim(win, vertices=cueVertices, units='deg', fillColor='red', lineWidth=0, size=37, pos=posLVF)
+cueRight = ShapeStim(win, vertices=cueVertices, units='deg', fillColor='red', lineWidth=0, size=23, pos=posRVF)
+cueLeft = ShapeStim(win, vertices=cueVertices, units='deg', fillColor='red', lineWidth=0, size=23, pos=posLVF)
 
 #Trial Handler randomizes and puts things in sequence the way you want them to be
 stimList=[]
@@ -97,6 +98,7 @@ for thisTrial in trials: #Records the trials that are happening with this partic
         position=posLVF 
         visfield='L'
         distRight = visual.ImageStim(win, image=imageDist[trials.thisTrial.image]+'.jpg', pos=posRVF,size=faceSize) #defining and retrieving distractor for RVF
+        imageDistTrial= imageDist[trials.thisTrial.image]+'.jpg'
         dist=distRight
         cue=cueLeft
         maskLeft
@@ -105,6 +107,7 @@ for thisTrial in trials: #Records the trials that are happening with this partic
         position=posRVF
         visfield='R'
         distLeft = visual.ImageStim(win, image=imageDist[trials.thisTrial.image]+'.jpg', pos=posLVF,size=faceSize)
+        imageDistTrial=imageDist[trials.thisTrial.image]+'.jpg'
         dist=distLeft
         cue=cueRight
         maskRight
@@ -185,7 +188,7 @@ for thisTrial in trials: #Records the trials that are happening with this partic
             else:
                 accuracy=0
                 incorSnd.play()
-    dataFile.write('%d\t%s\t%s\t%s\t%s\t%s\n' %(nTrials, imagefileName, trials.thisTrial.field, response, accuracy, RTs[0]))
+    dataFile.write('%d\t%s\t%s\t%s\t%s\t%s\t%s\n' %(nTrials, imagefileName, imageDistTrial, trials.thisTrial.field, response, accuracy, RTs[0]))
 
 event.clearEvents()
 

@@ -29,7 +29,8 @@ dataFile.write('nTrials, imagefileName, visfield,  Response, accuracy, RT\n')   
 #       break 
 #    ii += 1
 
-win = visual.Window(fullscr=True, allowGUI= True, monitor = 'viewPixx', units = 'deg')
+#win = visual.Window(fullscr=True, allowGUI= True, monitor = 'viewPixx', units = 'deg')
+win = visual.Window(fullscr=True, allowGUI= True, monitor = 'testMonitor', units = 'deg')
 #Graphic User Interface True
 win.mouseVisible=True #mouse is visible
 
@@ -53,8 +54,8 @@ posRVF=((2.5+faceWidth/2),0)
 #Gaussian noise mask
 
 noiseTexture = numpy.random.rand(128, 128) * 2.0 - 1
-maskRight = visual.GratingStim(win, tex=noiseTexture, size=(6.5,6.5),pos=posRVF, units='deg', interpolate=False, autoLog=False)
-maskLeft= visual.GratingStim(win, tex=noiseTexture,size=(6.5, 6.5), pos=posLVF, units='deg', interpolate=False, autoLog=False)
+maskRight = visual.GratingStim(win, tex=noiseTexture, size=(4.2,4.2),pos=posRVF, units='deg', interpolate=False, autoLog=False)
+maskLeft= visual.GratingStim(win, tex=noiseTexture,size=(4.2, 4.2), pos=posLVF, units='deg', interpolate=False, autoLog=False)
 
 
 #Trial Handler randomizes and puts things in sequence the way you want them to be
