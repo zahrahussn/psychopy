@@ -21,7 +21,10 @@ params['stimulusduration']=0.2
 params['maskduration']=0.1
 params['blankduration']=0.2
 
-dataFileName = 'data/FaceMatch'+params['ID number']+'_oneFace' #Accessing data file to record data
+if params['Number of distractors'] == 0:
+    dataFileName = 'data/FaceMatch'+params['ID number']+'_NoDistractor' #Accessing data file to record data
+else:
+    dataFileName = 'data/FaceMatch'+params['ID number']+'_WithDistractor'
 if os.path.exists(dataFileName+'.txt'):
     ii=2
     while True:
@@ -31,8 +34,10 @@ if os.path.exists(dataFileName+'.txt'):
             break 
         ii += 1
 with open(dataFileName+'.txt', 'a') as dataFile:
-    dataFile.write('nTrials, faceID, visfield, response, accuracy, RT\n')   #Data file listing #Is this enough to create a data file?
-
+    if params['Number of distractors'] == 0:
+        dataFile.write('nTrials, faceID, visfield, response, accuracy, RT\n')   #Data file listing
+    else:
+        dataFile.write('nTrials, faceID, distractorID, visfield, response, accuracy, RT\n')   #Data file listing
 
 #win = visual.Window(fullscr=True, allowGUI= True, monitor = 'viewPixx', units = 'deg')
 win = visual.Window(fullscr=True, allowGUI= True, monitor = 'testMonitor', units = 'deg')
@@ -55,6 +60,15 @@ faceSize=(faceWidth,faceHeight)
 posLVF=((-2.5-faceWidth/2),0)
 posRVF=((2.5+faceWidth/2),0)
 faceStimulus= visual.ImageStim(win,size=faceSize) # create face stimulus without specifying the image or position
+
+if params['Number of distractors'] == 1:
+    distPath='Distractor/' #Retrieving distractors from Distractor folder with their respective numbers
+    imageDist=['D1','D2','D3','D4','D5','D6','D7','D8','D9','D10']
+    distStimulus = visual.ImageStim(win, size=faceSize)
+    
+    #Draws a rectangular cue for face presentation
+    cueVertices = [[(-.09,-.09),(-.09,.09),(.09,.09),(.09,-.09)],[(-.092,-.092),(-.092,.092),(.092,.092),(.092,-.092)]]
+    cue = ShapeStim(win, vertices=cueVertices, units='deg', fillColor='red', lineWidth=0, size=23)
 
 #Gaussian noise mask
 noiseTexture = numpy.random.rand(128, 128) * 2.0 - 1
@@ -112,17 +126,27 @@ for thisTrial in trials: #Records the trials that are happening with this partic
     else: # if female face
         image=imageF[trials.thisTrial.image]
         correctFace=trials.thisTrial.image+5 #+5 to consider females in the equation 5-6-7-8-9
-    # set the image
+    # set the image(s)
     faceStimulus.image = facePath+image+'.jpg'
-    # set the location
+    if params['Number of distractors'] == 1:
+        distStimulus.image = distPath+imageDist[correctFace]+'.jpg'
+    # set the locations
     if trials.thisTrial.field==1: #  LVF trial 
         faceStimulus.pos=posLVF 
         visfield='L'
         mask=maskLeft
+        if params['Number of distractors'] == 1:
+            cue.pos = posLVF
+            distStimulus.pos = posRVF
+            distMask = maskRight
     else: # RVF 
         faceStimulus.pos=posRVF
         visfield='R'
         mask=maskRight
+        if params['Number of distractors'] == 1:
+            cue.pos = posRVF
+            distStimulus.pos = posLVF
+            distMask = maskLeft
     
     # present the stimuli. First fixation screen, then face presentation, then selection screen.
     
@@ -133,11 +157,16 @@ for thisTrial in trials: #Records the trials that are happening with this partic
     for frameN in range(int(round(params['stimulusduration']*params['frameRate']))): #drawing face presentation for 0.3s
         fixation.draw()
         faceStimulus.draw()
+        if params['Number of distractors'] == 1:
+            distStimulus.draw()
+            cue.draw()
         win.update()
     
     for frameN in range(int(round(params['maskduration']*params['frameRate']))): #mask screen for 0.1s
         fixation.draw()
         mask.draw()
+        if params['Number of distractors'] == 1:
+            distMask.draw()
         win.update()
         
     for frameN in range(int(round(params['blankduration']*params['frameRate']))): #blank screen for 0.2 s blankdurationmL
@@ -178,7 +207,10 @@ for thisTrial in trials: #Records the trials that are happening with this partic
                     else:
                         clickedImage = imageF[clickedFace - 5]
                     with open(dataFileName+'.txt', 'a') as dataFile:
-                        dataFile.write('%d\t%s\t%s\t%s\t%d\t%f\n' %(nTrials, image, visfield, clickedImage, accuracy, RTs[0]))
+                        if params['Number of distractors'] == 0:
+                            dataFile.write('%d\t%s\t%s\t%s\t%d\t%f\n' %(nTrials, image, visfield, clickedImage, accuracy, RTs[0]))
+                        else:
+                            dataFile.write('%d\t%s\t%s\t%s\t%s\t%d\t%f\n' %(nTrials, image, visfield, imageDist[correctFace], clickedImage, accuracy, RTs[0]))
                     
                     myMouse.setVisible(False) # hide cursor
 
