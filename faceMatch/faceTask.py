@@ -8,7 +8,7 @@ import string, time
 import platform
 
 #variable=''
-params = {'ID number':'1','Number of distractors':0,'Number of trials per condition':5}
+params = {'ID number':'1','Number of distractors':0,'Number of trials per condition':8}
 
 dlg = gui.DlgFromDict(params, title='Face Match', fixed=['dateStr'])
 if dlg.OK == False:
@@ -22,27 +22,30 @@ else:
     monitor = 'testMonitor'
     params['frameRate']=60
 params['fpduration']=1.0
-params['stimulusduration']=0.2
+params['stimulusduration']=0.150
+
 params['maskduration']=0.1
 params['blankduration']=0.2
+
+#stimulusduration='0.1'
 
 if params['Number of distractors'] == 0:
     dataFileName = 'data/FaceMatch'+params['ID number']+'_NoDistractor' #Accessing data file to record data
 else:
     dataFileName = 'data/FaceMatch'+params['ID number']+'_WithDistractor'
-if os.path.exists(dataFileName+'.txt'): # if datafile already exist, append a number
+if os.path.exists(dataFileName+'.csv'): # if datafile already exist, append a number
     ii=2
     while True:
         new_name = dataFileName + "_" + str(ii)
-        if not os.path.exists(new_name+'.txt'):
+        if not os.path.exists(new_name+'.csv'):
             dataFileName = new_name
             break 
         ii += 1
-with open(dataFileName+'.txt', 'a') as dataFile:
+with open(dataFileName+'.csv', 'a') as dataFile:
     if params['Number of distractors'] == 0:
-        dataFile.write('nTrials, faceID, visfield, response, accuracy, RT\n')   #Data file without distractor
+        dataFile.write('nTrials\t faceID\t visfield\t response\t accuracy\t RT\t stimDuration\n')#Data file without distractor
     else:
-        dataFile.write('nTrials, faceID, visfield, distractorID, response, accuracy, RT\n')   #Data file with distractor
+        dataFile.write('nTrials\t faceID\t visfield\t distractorID\t response\t accuracy\t RT\t stimDuration\n')   #Data file with distractor
 
 win = visual.Window(fullscr=True, allowGUI= True, monitor = monitor, units = 'deg')
 
@@ -212,11 +215,11 @@ for thisTrial in trials: #Records the trials that are happening with this partic
                         clickedImage = imageM[clickedFace]
                     else:
                         clickedImage = imageF[clickedFace - 5]
-                    with open(dataFileName+'.txt', 'a') as dataFile:
+                    with open(dataFileName+'.csv', 'a') as dataFile:
                         if params['Number of distractors'] == 0:
-                            dataFile.write('%d\t%s\t%s\t%s\t%d\t%f\n' %(nTrials, image, visfield, clickedImage, accuracy, RTs[0]))
+                            dataFile.write('%d\t%s\t%s\t%s\t%d\t%f\t0.15 s\n' %(nTrials, image, visfield, clickedImage, accuracy, RTs[0]))
                         else:
-                            dataFile.write('%d\t%s\t%s\t%s\t%s\t%d\t%f\n' %(nTrials, image, visfield, imageDist[distractor], clickedImage, accuracy, RTs[0]))
+                            dataFile.write('%d\t%s\t%s\t%s\t%s\t%d\t%f\t0.15 s\n' %(nTrials, image, visfield, imageDist[distractor], clickedImage, accuracy, RTs[0],))
                     
                     myMouse.setVisible(False) # hide cursor
 
