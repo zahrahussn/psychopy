@@ -50,7 +50,7 @@ wordlist2=['basics','rewind','actors','coupon','legion','divine']
 wordlist3=['marble','cowboy','nature','temper','attack','resume']
 wordlist4=['market','coward','native','temple','attend','reside']
 
-line=visual.Line(win, start=(0,2),end=(0,-3),lineColor=[-1,-1,-1]) #to draw a vertical line separating the word-halves
+line=visual.Line(win, start=(0,2),end=(0,-3),lineColor=[-1,-1,-1],lineWidth=1.5,units='deg') #to draw a vertical line separating the word-halves
 
 # setup trial handler
 stimList=[]

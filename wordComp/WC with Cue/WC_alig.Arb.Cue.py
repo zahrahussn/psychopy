@@ -51,7 +51,7 @@ wordlist2=[u'عريض',u'سارح',u'جميع',u'جواد',u'مريب',u'زما�
 wordlist3=[u'شريك',u'قاصر',u'مقاس',u'صوار',u'خراب',u'عميق']
 wordlist4=[u'شريف',u'قائل',u'مقال',u'صواب',u'خروج',u'عميل']
 
-line=visual.Line(win, start=(0,2),end=(0,-3),lineColor=[-1,-1,-1]) #to draw a vertical line separating the word-halves
+line=visual.Line(win, start=(0,2),end=(0,-3),lineColor=[-1,-1,-1]) #a vertical line separating the word-halves
 
 # setup trial handler
 stimList=[]
