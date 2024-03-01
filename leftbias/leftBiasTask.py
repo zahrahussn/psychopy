@@ -6,18 +6,31 @@ from random import shuffle
 import string, time
 import random, copy, scipy 
 import os
+from psychopy.hardware import keyboard
+import platform
+import ctypes
+xlib = ctypes.cdll.LoadLibrary("libX11.so")
+xlib.XInitThreads()
+
 
 params = {'Subject':'1', 'Experimenter': 'zh'}
-dlg = gui.DlgFromDict(params, title='leftBias', fixed=['dateStr'])
-if dlg.OK:
-    toFile('lastParams.pickle', params) #save params to file for next time
-else:
-    core.quit()#the user hit cancel so exit
-fileName = params['Subject']+params['Experimenter']
-dataFile = open('data/'+fileName+'.txt', 'a') #a simple text file with 'comma-separated-values'
+#dlg = gui.DlgFromDict(params, title='leftBias', fixed=['dateStr'])
+#if dlg.OK:
+toFile('lastParams.pickle', params) #save params to file for next time
+#else:
+#    core.quit()#the user hit cancel so exit
+fileName = params['Experimenter']+'_'+params['Subject']
+
+dataFile = open('../../psychopyData/leftBias/'+fileName+'.csv', 'a') #a simple text file with 'comma-separated-values'
 dataFile.write('trial, blocktrial, stimulus, stimulusNumber, IM, LLlocation, corresponse, response, bias, RT\n') 
 
-frameRate=60
+if platform.platform()[0:5] == 'Linux': # if we're on Linux, then we're probably using the viewpixx monitor
+    monitor = 'viewPixx'
+    frameRate=120
+else:
+    monitor = 'testMonitor'
+    frameRate=60
+
 duration=0.3
 ISI1=0.2
 ISI2=0.5
@@ -36,7 +49,8 @@ stimuli=['face','texture', 'outline']
 random.shuffle(stimuli)
 
 # Create a visual window:
-win = visual.Window(fullscr=True, allowGUI = True, monitor = 'testMonitor', units = 'deg',checkTiming=False)
+# win = visual.Window(fullscr=True, allowGUI = True, monitor = 'testMonitor', units = 'deg',checkTiming=False)
+win = visual.Window(fullscr=True, allowGUI = True, monitor = monitor, units = 'deg',checkTiming=False)
 win.mouseVisible=False
 fixation = visual.PatchStim(win, color=-1, tex=None, mask='circle',size=(0.25,0.25))
 instruction1 = visual.TextStim(win, text=u'Judge whether the left image or right image looks more like the target in the middle', 
@@ -48,16 +62,19 @@ breakscreen1 = visual.TextStim(win, text='End of block', pos=(0,2), height=0.6, 
 breakscreen2 = visual.TextStim(win, text='Press the spacebar to continue', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
 endscreen1 = visual.TextStim(win, text='End of experiment', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
 endscreen2 = visual.TextStim(win, text='Press space to exit', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
+kb = keyboard.Keyboard()
 
-keyPress = ['']
-while keyPress[0] not in ['space']:
+# keyPress = ['']
+keys = kb.getKeys()
+while 'space' not in keys:
     win.mouseVisible=False
     instruction1.draw()
     instruction2.draw()
     instruction3.draw()
     instruction4.draw()
     win.flip()
-    keyPress = event.waitKeys()
+    #keyPress = event.waitKeys()
+    keys = kb.getKeys()
 
 trial=0;
 for i in [0,1,2]: 
@@ -70,32 +87,32 @@ for i in [0,1,2]:
         stimPath='stimuli/outlines/renamedOutlines/'
     
     if i in [1,2]:
-        keyPress = ['']
-        while keyPress[0] not in ['space']:
+        keys = kb.getKeys()
+        while 'space' not in keys:
             breakscreen1.draw()
             breakscreen2.draw()
             win.mouseVisible=False
             win.flip()
             win.mouseVisible=False
-            keyPress = event.waitKeys()
+            keys = kb.getKeys()
             win.mouseVisible=False
 
-    imageO = [os.path.join(stimPath +'O1')]#, os.path.join(stimPath +'O2'),os.path.join(stimPath +'O3'),os.path.join(stimPath +'O4'),os.path.join(stimPath +'O5'),
+    imageO = [os.path.join(stimPath +'O1.jpeg')]#, os.path.join(stimPath +'O2'),os.path.join(stimPath +'O3'),os.path.join(stimPath +'O4'),os.path.join(stimPath +'O5'),
     #    os.path.join(stimPath +'O6'),os.path.join(stimPath +'O7'), os.path.join(stimPath +'O8'),os.path.join(stimPath +'O9'),os.path.join(stimPath +'O10'),
     #    os.path.join(stimPath  +'O11'),os.path.join(stimPath  +'O12'),os.path.join(stimPath  +'O13'),os.path.join(stimPath +'O14'),os.path.join(stimPath +'O15'),
     #    os.path.join(stimPath +'O16'),os.path.join(stimPath +'O17'),os.path.join(stimPath +'O18'),os.path.join(stimPath  +'O19'),os.path.join(stimPath +'O20')]
     
-    imageM = [os.path.join(stimPath +'M1')]#, os.path.join(stimPath +'M2'),os.path.join(stimPath +'M3'),os.path.join(stimPath +'M4'),os.path.join(stimPath +'M5'),
+    imageM = [os.path.join(stimPath +'M1.jpeg')]#, os.path.join(stimPath +'M2'),os.path.join(stimPath +'M3'),os.path.join(stimPath +'M4'),os.path.join(stimPath +'M5'),
     #    os.path.join(stimPath +'M6'),os.path.join(stimPath +'M7'), os.path.join(stimPath +'M8'),os.path.join(stimPath +'M9'),os.path.join(stimPath +'M10'),
     #    os.path.join(stimPath +'M11'),os.path.join(stimPath +'M12'),os.path.join(stimPath +'M13'),os.path.join(stimPath +'M14'),os.path.join(stimPath +'M15'),
     #    os.path.join(stimPath +'M16'),os.path.join(stimPath +'M17'),os.path.join(stimPath +'M18'),os.path.join(stimPath +'M19'),os.path.join(stimPath +'M20')]
     
-    imageL = [os.path.join(stimPath +'LL1')]#, os.path.join(stimPath +'LL2'),os.path.join(stimPath +'LL3'),os.path.join(stimPath +'LL4'),os.path.join(stimPath +'LL5'),
+    imageL = [os.path.join(stimPath +'LL1.jpeg')]#, os.path.join(stimPath +'LL2'),os.path.join(stimPath +'LL3'),os.path.join(stimPath +'LL4'),os.path.join(stimPath +'LL5'),
     #    os.path.join(stimPath +'LL6'),os.path.join(stimPath +'LL7'), os.path.join(stimPath +'LL8'),os.path.join(stimPath +'LL9'),os.path.join(stimPath +'LL10'),
     #    os.path.join(stimPath  +'LL11'),os.path.join(stimPath +'LL12'),os.path.join(stimPath +'LL13'),os.path.join(stimPath +'LL14'),os.path.join(stimPath +'LL15'),
     #    os.path.join(stimPath +'LL16'),os.path.join(stimPath +'LL17'),os.path.join(stimPath +'LL18'),os.path.join(stimPath +'LL19'),os.path.join(stimPath +'LL20')]
     
-    imageR = [os.path.join(stimPath  +'RR1')]#, os.path.join(stimPath +'RR2'),os.path.join(stimPath +'RR3'),os.path.join(stimPath +'RR4'),os.path.join(stimPath  +'RR5'),
+    imageR = [os.path.join(stimPath  +'RR1.jpeg')]#, os.path.join(stimPath +'RR2'),os.path.join(stimPath +'RR3'),os.path.join(stimPath +'RR4'),os.path.join(stimPath  +'RR5'),
     #    os.path.join(stimPath +'RR6'),os.path.join(stimPath +'RR7'), os.path.join(stimPath +'RR8'),os.path.join(stimPath +'RR9'),os.path.join(stimPath  +'RR510'),
     #    os.path.join(stimPath +'RR11'),os.path.join(stimPath +'RR12'),os.path.join(stimPath +'RR13'),os.path.join(stimPath +'RR14'),os.path.join(stimPath +'RR15'),
     #    os.path.join(stimPath +'RR16'),os.path.join(stimPath +'RR17'),os.path.join(stimPath +'RR18'),os.path.join(stimPath +'RR19'),os.path.join(stimPath +'RR20')]
@@ -163,9 +180,11 @@ for i in [0,1,2]:
             win.update()
             
         # show stimuli
+        # kb = keyboard.Keyboard()
+        kb.clock.reset()
         thisResponse = None
         while thisResponse == None:
-            clockRT.reset()
+            #clockRT.reset()
             win.mouseVisible=False
             image_Cent.draw()
             image_LVF.draw()
@@ -173,16 +192,17 @@ for i in [0,1,2]:
             win.update()
             
     # collect response
-            allKeys = event.waitKeys(keyList=['escape','1','0'],timeStamped = clockRT)
+            #allKeys = event.waitKeys(keyList=['escape','1','0'],timeStamped = clockRT)
+            keys = kb.getKeys(keyList=['escape','1','0'])
             win.mouseVisible=False
-            for keyTuple in allKeys:
-                [thisKey, thisRT] = keyTuple
-                
-            for thisKey in allKeys:
-                if thisKey[0] in ['escape']:
-                    dataFile.write('%d%s\t\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' %(trial,blockTrial,stimuli[i],stimName,IM, LL_location,corresp,response, bias,round(thisRT,2)))
+#            for keyTuple in keys:
+#                [key.name, key.rt] = keyTuple
+#                
+            for thisKey in keys:
+                if thisKey.name in ['escape']:
+                    dataFile.write('%d%s\t\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' %(trial,blockTrial,stimuli[i],stimName,IM, LL_location,corresp,response, 'NA',round(thisKey.rt,2)))
                     core.quit()
-                elif int(thisKey[0])==corresp:
+                elif int(thisKey.name)==corresp:
                     thisResponse=1
                     bias=1
                     win.mouseVisible=False
@@ -194,17 +214,18 @@ for i in [0,1,2]:
                     win.mouseVisible=False
                     win.update()
                     win.mouseVisible=False
-        trials.addData('RT', thisRT)
+        trials.addData('RT', thisKey.rt)
         trials.addData('bias', bias)
         event.clearEvents()
-        dataFile.write('%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' %(trial,blockTrial,stimuli[i],stimName,IM, LL_location,corresp,thisKey[0], bias,round(thisRT,2)))
+        dataFile.write('%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' %(trial,blockTrial,stimuli[i],stimName,IM, LL_location,corresp,thisKey.name, bias,round(thisKey.rt,2)))
 
-keyPress = ['']
-while keyPress[0] not in ['space']:
+# keyPress = ['']
+keys = kb.getKeys()
+while 'space' not in keys:
     win.mouseVisible=False
     endscreen1.draw()
     endscreen2.draw()
     win.flip()
-    keyPress = event.waitKeys()
+    keys = kb.getKeys()
 
 core.quit()
