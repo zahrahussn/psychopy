@@ -8,10 +8,6 @@ import random, copy, scipy
 import os
 from psychopy.hardware import keyboard
 import platform
-import ctypes
-xlib = ctypes.cdll.LoadLibrary("libX11.so")
-xlib.XInitThreads()
-
 
 params = {'Subject':'1', 'Experimenter': 'zh'}
 #dlg = gui.DlgFromDict(params, title='leftBias', fixed=['dateStr'])
@@ -28,6 +24,9 @@ debug=1
 if platform.platform()[0:5] == 'Linux': # if we're on Linux, then we're probably using the viewpixx monitor
     monitor = 'viewPixx'
     frameRate=120
+    import ctypes
+    xlib = ctypes.cdll.LoadLibrary("libX11.so")
+    xlib.XInitThreads()
 else:
     monitor = 'testMonitor'
     frameRate=60
