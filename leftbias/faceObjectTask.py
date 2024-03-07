@@ -9,7 +9,7 @@ import os
 from psychopy.hardware import keyboard
 import platform
 
-params = {'Subject':'1', 'Experimenter': 'zh'}
+params = {'Subject':'as', 'Experimenter': 'zh'}
 #dlg = gui.DlgFromDict(params, title='leftBias', fixed=['dateStr'])
 #if dlg.OK:
 toFile('lastParams.pickle', params) #save params to file for next time
