@@ -9,7 +9,7 @@ import os
 from psychopy.hardware import keyboard
 import platform
 
-params = {'Subject':'as', 'Experimenter': 'zh'}
+params = {'Subject':'tmp', 'Experimenter': 'zh'}
 #dlg = gui.DlgFromDict(params, title='leftBias', fixed=['dateStr'])
 #if dlg.OK:
 toFile('lastParams.pickle', params) #save params to file for next time
@@ -19,7 +19,7 @@ fileName = params['Experimenter']+'_'+params['Subject']
 
 dataFile = open('../../psychopyData/leftBias/'+fileName+'.csv', 'a') #a simple text file with 'comma-separated-values'
 dataFile.write('trial, blocktrial, stimulus, stimulusNumber, IM, LLlocation, corresponse, response, bias, RT\n') 
-debug=1
+debug=0
 
 if platform.platform()[0:5] == 'Linux': # if we're on Linux, then we're probably using the viewpixx monitor
     monitor = 'viewPixx'
@@ -35,8 +35,8 @@ duration=0.3
 ISI1=0.2
 ISI2=0.5
 fp=1
-faceWidth=4.5 # equivalent of 5 dg of visual angle in pixels according to screen dimension
-faceHeight=4.5
+faceWidth=5 # equivalent of 5 dg of visual angle in pixels according to screen dimension
+faceHeight=5
 faceSize=(faceWidth,faceHeight)
 posLVF=(-8,0)
 posRVF=(8,0)
@@ -97,30 +97,30 @@ for i in [0,1,2]:
             keys = kb.getKeys()
             win.mouseVisible=False
     if debug==1:
-        imageO = [os.path.join(stimPath +'O1')]
-        imageM = [os.path.join(stimPath +'M1')]
-        imageL = [os.path.join(stimPath +'LL1')]
-        imageR = [os.path.join(stimPath  +'RR1')]
+        imageO = [os.path.join(stimPath +'O1.jpeg')]
+        imageM = [os.path.join(stimPath +'M1.jpeg')]
+        imageL = [os.path.join(stimPath +'LL1.jpeg')]
+        imageR = [os.path.join(stimPath  +'RR1.jpeg')]
     else:    
-        imageO = [os.path.join(stimPath +'O1'), os.path.join(stimPath +'O2'),os.path.join(stimPath +'O3'),os.path.join(stimPath +'O4'),os.path.join(stimPath +'O5'),
-            os.path.join(stimPath +'O6'),os.path.join(stimPath +'O7'), os.path.join(stimPath +'O8'),os.path.join(stimPath +'O9'),os.path.join(stimPath +'O10'),
-            os.path.join(stimPath  +'O11'),os.path.join(stimPath  +'O12'),os.path.join(stimPath  +'O13'),os.path.join(stimPath +'O14'),os.path.join(stimPath +'O15'),
-            os.path.join(stimPath +'O16'),os.path.join(stimPath +'O17'),os.path.join(stimPath +'O18'),os.path.join(stimPath  +'O19'),os.path.join(stimPath +'O20')]
+        imageO = [os.path.join(stimPath +'O1.jpeg'), os.path.join(stimPath +'O2.jpeg'),os.path.join(stimPath +'O3.jpeg'),os.path.join(stimPath +'O4.jpeg'),os.path.join(stimPath +'O5.jpeg'),
+            os.path.join(stimPath +'O6.jpeg'),os.path.join(stimPath +'O7.jpeg'), os.path.join(stimPath +'O8.jpeg'),os.path.join(stimPath +'O9.jpeg'),os.path.join(stimPath +'O10.jpeg'),
+            os.path.join(stimPath  +'O11.jpeg'),os.path.join(stimPath  +'O12.jpeg'),os.path.join(stimPath  +'O13.jpeg'),os.path.join(stimPath +'O14.jpeg'),os.path.join(stimPath +'O15.jpeg'),
+            os.path.join(stimPath +'O16.jpeg'),os.path.join(stimPath +'O17.jpeg'),os.path.join(stimPath +'O18.jpeg'),os.path.join(stimPath  +'O19.jpeg'),os.path.join(stimPath +'O20.jpeg')]
         
-        imageM = [os.path.join(stimPath +'M1'), os.path.join(stimPath +'M2'),os.path.join(stimPath +'M3'),os.path.join(stimPath +'M4'),os.path.join(stimPath +'M5'),
-            os.path.join(stimPath +'M6'),os.path.join(stimPath +'M7'), os.path.join(stimPath +'M8'),os.path.join(stimPath +'M9'),os.path.join(stimPath +'M10'),
-            os.path.join(stimPath +'M11'),os.path.join(stimPath +'M12'),os.path.join(stimPath +'M13'),os.path.join(stimPath +'M14'),os.path.join(stimPath +'M15'),
-            os.path.join(stimPath +'M16'),os.path.join(stimPath +'M17'),os.path.join(stimPath +'M18'),os.path.join(stimPath +'M19'),os.path.join(stimPath +'M20')]
+        imageM = [os.path.join(stimPath +'M1.jpeg'), os.path.join(stimPath +'M2.jpeg'),os.path.join(stimPath +'M3.jpeg'),os.path.join(stimPath +'M4.jpeg'),os.path.join(stimPath +'M5.jpeg'),
+            os.path.join(stimPath +'M6.jpeg'),os.path.join(stimPath +'M7.jpeg'), os.path.join(stimPath +'M8.jpeg'),os.path.join(stimPath +'M9.jpeg'),os.path.join(stimPath +'M10.jpeg'),
+            os.path.join(stimPath +'M11.jpeg'),os.path.join(stimPath +'M12.jpeg'),os.path.join(stimPath +'M13.jpeg'),os.path.join(stimPath +'M14.jpeg'),os.path.join(stimPath +'M15.jpeg'),
+            os.path.join(stimPath +'M16.jpeg'),os.path.join(stimPath +'M17.jpeg'),os.path.join(stimPath +'M18.jpeg'),os.path.join(stimPath +'M19.jpeg'),os.path.join(stimPath +'M20.jpeg')]
         
-        imageL = [os.path.join(stimPath +'LL1'), os.path.join(stimPath +'LL2'),os.path.join(stimPath +'LL3'),os.path.join(stimPath +'LL4'),os.path.join(stimPath +'LL5'),
-            os.path.join(stimPath +'LL6'),os.path.join(stimPath +'LL7'), os.path.join(stimPath +'LL8'),os.path.join(stimPath +'LL9'),os.path.join(stimPath +'LL10'),
-            os.path.join(stimPath  +'LL11'),os.path.join(stimPath +'LL12'),os.path.join(stimPath +'LL13'),os.path.join(stimPath +'LL14'),os.path.join(stimPath +'LL15'),
-            os.path.join(stimPath +'LL16'),os.path.join(stimPath +'LL17'),os.path.join(stimPath +'LL18'),os.path.join(stimPath +'LL19'),os.path.join(stimPath +'LL20')]
+        imageL = [os.path.join(stimPath +'LL1.jpeg'), os.path.join(stimPath +'LL2.jpeg'),os.path.join(stimPath +'LL3.jpeg'),os.path.join(stimPath +'LL4.jpeg'),os.path.join(stimPath +'LL5.jpeg'),
+            os.path.join(stimPath +'LL6.jpeg'),os.path.join(stimPath +'LL7.jpeg'), os.path.join(stimPath +'LL8.jpeg'),os.path.join(stimPath +'LL9.jpeg'),os.path.join(stimPath +'LL10.jpeg'),
+            os.path.join(stimPath  +'LL11.jpeg'),os.path.join(stimPath +'LL12.jpeg'),os.path.join(stimPath +'LL13.jpeg'),os.path.join(stimPath +'LL14.jpeg'),os.path.join(stimPath +'LL15.jpeg'),
+            os.path.join(stimPath +'LL16.jpeg'),os.path.join(stimPath +'LL17.jpeg'),os.path.join(stimPath +'LL18.jpeg'),os.path.join(stimPath +'LL19.jpeg'),os.path.join(stimPath +'LL20.jpeg')]
         
-        imageR = [os.path.join(stimPath  +'RR1'), os.path.join(stimPath +'RR2'),os.path.join(stimPath +'RR3'),os.path.join(stimPath +'RR4'),os.path.join(stimPath  +'RR5'),
-            os.path.join(stimPath +'RR6'),os.path.join(stimPath +'RR7'), os.path.join(stimPath +'RR8'),os.path.join(stimPath +'RR9'),os.path.join(stimPath  +'RR510'),
-            os.path.join(stimPath +'RR11'),os.path.join(stimPath +'RR12'),os.path.join(stimPath +'RR13'),os.path.join(stimPath +'RR14'),os.path.join(stimPath +'RR15'),
-            os.path.join(stimPath +'RR16'),os.path.join(stimPath +'RR17'),os.path.join(stimPath +'RR18'),os.path.join(stimPath +'RR19'),os.path.join(stimPath +'RR20')]
+        imageR = [os.path.join(stimPath  +'RR1.jpeg'), os.path.join(stimPath +'RR2.jpeg'),os.path.join(stimPath +'RR3.jpeg'),os.path.join(stimPath +'RR4.jpeg'),os.path.join(stimPath  +'RR5.jpeg'),
+            os.path.join(stimPath +'RR6.jpeg'),os.path.join(stimPath +'RR7.jpeg'), os.path.join(stimPath +'RR8.jpeg'),os.path.join(stimPath +'RR9.jpeg'),os.path.join(stimPath  +'RR10.jpeg'),
+            os.path.join(stimPath +'RR11.jpeg'),os.path.join(stimPath +'RR12.jpeg'),os.path.join(stimPath +'RR13.jpeg'),os.path.join(stimPath +'RR14.jpeg'),os.path.join(stimPath +'RR15.jpeg'),
+            os.path.join(stimPath +'RR16.jpeg'),os.path.join(stimPath +'RR17.jpeg'),os.path.join(stimPath +'RR18.jpeg'),os.path.join(stimPath +'RR19.jpeg'),os.path.join(stimPath +'RR20.jpeg')]
     
     # setup trial handler
     win.mouseVisible=False
@@ -129,7 +129,7 @@ for i in [0,1,2]:
         for intact in [1,0]: # intact vs mirror
             for field in [1,0]: # LVF
                 stimList.append({'intact': intact, 'field':field, 'image':image}) # setting trial sequence
-    trials = data.TrialHandler(stimList, 1)
+    trials = data.TrialHandler(stimList, 2)
     trials.data.addDataType('RT')
     trials.data.addDataType('bias')
     clockRT = core.Clock() 
