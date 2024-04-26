@@ -158,7 +158,10 @@ for thisTrial in trials:
 #    trials.addData('corresp', corresp)
 #    event.clearEvents()
 #    dataFile.write('%s %s %s %s %s %s %s\n' %(trials.thisTrial.coherence, trials.thisTrial.direction, corresp, thisKey[0], accuracy, incorrect, round(thisRT,3)))
-    
+
+# save data file as pickle for processing
+trials.saveAsPickle('../../psychopyData/Motion/'+fileName)
+
 # keyPress = ['']
 keys = kb.getKeys()
 while 'space' not in keys:
