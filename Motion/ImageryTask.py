@@ -6,12 +6,15 @@ from random import shuffle
 import string, time
 import random, copy, scipy
 import numpy as np
+from psychopy.hardware import keyboard
+import platform
 
-params = {'participant ID':'1','condition':'test'}
+params = {'Subject':'001', 'Experimenter':'aa'}
 frameRate=60
+resx=1920
 speed=2.7
 blank1=1
-dotSpeed=0.11 #2deg/s, to be converted to 2deg/frame
+dotSpeed=8.25 #in degrees per second
 fpDuration=0.5
 blank2=0.1
 stimDuration=1
@@ -19,21 +22,36 @@ cueDuration=1
 sqrDuration0=6
 upVert=[(0.5,0),(0,0.5),(-0.5,0),(-0.125,0),(-0.125,-0.5),(0.125,-0.5),(0.125,0)]
 downVert=[(0.5,0),(0,-0.5),(-0.5,0),(-0.125,0),(-0.125,0.5),(0.125,0.5),(0.125,0)]
-blockTypes=['up','up','down','down']
+blockTypes=['up','up','up','up','down','down','down','down']
 random.shuffle(blockTypes)
 C99= 0.5 #insert coherence at 99% performance here
 
-fileName = params['participant ID']+'_blocks'
+
+toFile('lastParams.pickle', params) #save params to file for next time
+
+fileName = params['Experimenter']+'_'+params['Subject']+'_imagery'
 dataFile = open(fileName+'.csv', 'a')#a simple text file with 'comma-separated-values'
-dataFile.write('trial, blocktrial, adapt_direction, coherence, direction, corresp, subjectResp, accuracy, incorrect, RT\n')
+dataFile.write('trial, blocktrial, imagery_direction, coherence, direction, corresp, subjectResp, accuracy, incorrect, RT\n')
 
-win = visual.Window(monitor='testMonitor', units='deg', checkTiming=False)
+debug=0
 
-# The fill color to start with.
-#color = np.array([1, 1, 1])
+if platform.platform()[0:5] == 'Linux': # if we're on Linux, then we're probably using the viewpixx monitor
+    monitor = 'viewPixx'
+    frameRate=120
+    import ctypes
+    xlib = ctypes.cdll.LoadLibrary("libX11.so")
+    xlib.XInitThreads()
+else:
+    monitor = 'testMonitor'
+    frameRate=60
 
+# Create a visual window:
+win = visual.Window(fullscr=True, allowGUI = True, monitor = monitor, winType='pyglet', units='deg')
+win.mouseVisible=False
+
+#creating stimuli
 adapt_gabor = visual.GratingStim(win, tex="sqr", mask="sqr", texRes=256, 
-           size=[10.0, 7.0], sf=[1, 0], ori = 270, name='gabor1', pos=(0,0))
+           size=[15.0, 10.0], sf=[1, 0], ori = 270, name='gabor1', pos=(0,0))
 arrowVert = [(0.5,0),(0,0.5),(-0.5,0),(-0.125,0),(-0.125,-0.5),(0.125,-0.5),(0.125,0)]
 arrow = ShapeStim(win, vertices=arrowVert, fillColor='white', lineWidth=2, lineColor='black', pos=(0,0))
 dot_stim = visual.DotStim(win, color=(1.0, 1.0, 1.0), dir=270,
@@ -45,27 +63,30 @@ dot_stim = visual.DotStim(win, color=(1.0, 1.0, 1.0), dir=270,
 fixation=visual.Circle(win, radius=0.1,  edges=128, units='deg', lineWidth=2, lineColor=[-1,-1,-1], fillColor=False, colorSpace='rgb', pos=(0, 0)) 
 blankFrame=visual.TextStim(win, text='', pos=(0, 0))
 clockRT = core.Clock()
-instruction1=visual.TextStim(win, text='You will be shown striped patterns moving up or down.', pos=(0,3))
-instruction2=visual.TextStim(win, text='Try to attend to the size, color, and speed of the stripes, so that later you can picture them clearly even when the screen is blank.', wrapWidth=20, pos=(0,0))
-instruction3=visual.TextStim(win, text='On the next screen, you will see an arrow indicating the direction to imagine the striped pattern. If the arrow points UP, you need to imagine the stripes moving upwards with the same speed as seen earlier. If the arrow points DOWN, you need to imagine the stripes moving downward. Focus on the arrow until it is gone, then imagine the motion when you see a flashing square.', wrapWidth=20, pos=(0,1))
-breakscreen=visual.TextStim(win, text='Press the spacebar to continue', pos=(0,-3), height=0.6, wrapWidth=20, units='deg')
+instruction1=visual.TextStim(win, text='You will be shown striped patterns moving up or down.', pos=(0,5))
+instruction2=visual.TextStim(win, text='Try to attend to the size, color, and speed of the stripes, so that later you can picture them clearly even when the screen is blank.', wrapWidth=25, pos=(0,0))
+instruction3=visual.TextStim(win, text='On the next screen, you will see an arrow on an image of the striped pattern. Remember the direction the arrow is pointing in as you will need to imagine the striped pattern moving in that direction in the next stage.', wrapWidth=35, pos=(0,6))
+instruction4=visual.TextStim(win, text='Once the arrow disappears, a flashing square will appear. Focus on it while imagining the moving stripes, after which you will see the dots and need to press either P for UP or Q for DOWN. ', pos=(0,0), wrapWidth=35, units='deg')
+breakscreen=visual.TextStim(win, text='Press the spacebar to continue', pos=(0,-5), wrapWidth=20, units='deg')
 breakscreen1=visual.TextStim(win, text='End of block', pos=(0,-0), wrapWidth=20, units='deg')
+endscreen1 = visual.TextStim(win, text='End of experiment', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
+endscreen2 = visual.TextStim(win, text='Press space to exit', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
 color = np.array([1, 1, 1])
 sqrVert = [(-0.25,-0.25),(-0.25,0.25),(0.25,0.25),(0.25,-0.25)]
 sqr = ShapeStim(win, vertices=sqrVert, fillColor=color, lineWidth=2, lineColor=None, pos=(0,0))
-#kb = keyboard.Keyboard()
+kb = keyboard.Keyboard()
 
-keys = event.getKeys()
+keys = kb.getKeys()
 while 'space' not in keys:
     win.mouseVisible=False
     instruction1.draw()
     instruction2.draw()
     breakscreen.draw()
     win.flip()
-    #keyPress = event.waitKeys()
-    keys = event.getKeys()
+    keys = kb.getKeys()
 
-for i in [0,1,2,3]:
+trial=0;
+for i in [0,1,2,3,4,5,6,7]:
     if blockTypes[i]=='up':
         arrow = ShapeStim(win, vertices=upVert, fillColor='white', lineWidth=2, lineColor='black', pos=(0,0))
     else: arrow = ShapeStim(win, vertices=downVert, fillColor='white', lineWidth=2, lineColor='black', pos=(0,0))
@@ -75,15 +96,14 @@ for i in [0,1,2,3]:
             blankFrame.draw()
             win.update()
     else:
-        keys = event.getKeys()
+        keys = kb.getKeys()
         while 'space' not in keys:
-            if thisKey[0] in ['escape']:core.quit()
             breakscreen1.draw()
             breakscreen.draw()
             win.mouseVisible=False
             win.update()
             win.mouseVisible=False
-            keys = event.getKeys()
+            keys = kb.getKeys()
             win.mouseVisible=False
     # setup trial handler
     stimList=[]
@@ -95,10 +115,14 @@ for i in [0,1,2,3]:
     trials.data.addDataType('RT')
     clockRT = core.Clock() 
     
+    response=''
+    responseField=''
+    blockTrial=0
     #for frameN in range(int(round(stimDuration*frameRate))):
     #        instruction.draw()
     #        win.update()
     
+    win.mouseVisible=False
     for frameN in range(int(round(stimDuration*2*frameRate))):
         adapt_gabor.setOri(90)
         adapt_gabor.setOpacity(1)
@@ -116,7 +140,6 @@ for i in [0,1,2,3]:
         win.update()
     for frameN in range(int(round(stimDuration*2*frameRate))):
         adapt_gabor.setOri(270)
-        adapt_gabor.setOpacity(1)
         adapt_gabor.phase += speed/frameRate
         adapt_gabor.draw() 
         p=np.cos((frameN*speed/frameRate)*2*np.pi)
@@ -158,17 +181,21 @@ for i in [0,1,2,3]:
         blankFrame.draw()
         win.update()
     # instructions for trials
-    keys = event.getKeys()
+    keys = kb.getKeys()
     while 'space' not in keys:
         instruction3.draw()
+        instruction4.draw()
         breakscreen.draw()
         win.mouseVisible=False
         win.update()
         win.mouseVisible=False
-        keys = event.getKeys()
+        keys = kb.getKeys()
         win.mouseVisible=False
     
     for thisTrial in trials:
+        win.mouseVsible=False
+        blockTrial=blockTrial+1
+        trial=trial+1
         
         if trials.thisTrialN==0:
            sqrDuration=10
@@ -179,12 +206,12 @@ for i in [0,1,2,3]:
         else: corresp='q'
                 
         
-        dot_stim = visual.DotStim(win, color=(1.0, 1.0, 1.0), dir=trials.thisTrial.direction,
+        dot_stim = visual.DotStim(win, units='deg', color=(1.0, 1.0, 1.0), dir=trials.thisTrial.direction,
         nDots=100, fieldShape='circle', fieldPos=(0.0, 0.0), fieldSize=10, dotSize=5, 
         dotLife=5,  # number of frames for each dot to be drawn
         signalDots='same',  # are signal dots 'same' on each frame? (see Scase et al)
         noiseDots='direction',  # do the noise dots follow random- 'walk', 'direction', or 'position'
-        speed=dotSpeed, coherence=trials.thisTrial.coherence)
+        speed=dotSpeed/frameRate, coherence=trials.thisTrial.coherence)
     #        
         #instructions
         win.mouseVisible=False
@@ -224,27 +251,37 @@ for i in [0,1,2,3]:
             win.update()
         while thisResponse == None: #could be put after
         # collect response
-            allKeys = event.getKeys(keyList=['escape','p','q'],timeStamped = clockRT)
-            for keyTuple in allKeys:
-                [thisKey, thisRT] = keyTuple
-            for thisKey in allKeys:
-                if thisKey[0] in ['escape']:core.quit()
-                elif thisKey[0] in ['p','q']:
-                    if thisKey[0] == corresp:
-                        thisResponse=1
-                        accuracy = 1
-                        incorrect = 0
-                        #corSnd.play()
-                    else: 
-                        thisResponse=1
-                        accuracy = 0
-                        incorrect = 1
-                        #incorSnd.play()
-        #while thisResponse == None: #could be put after
-        trials.addData('RT', thisRT)
-        trials.addData('corresp', corresp)
+            keys = kb.getKeys(keyList=['escape','p','q'])
+            win.mouseVisible=False
+            for thisKey in keys:
+                if thisKey.name in ['escape']: 
+                    dataFile.write('%d%s\t\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' %(trial,blockTrial,blockTypes[i],trials.thisTrial.coherence,trials.thisTrial.direction,corresp,'NA','NA',round(thisKey.rt,2)))
+                    core.quit()
+                elif thisKey.name==corresp:
+                    thisResponse=1
+                    accuracy=1
+                    win.mouseVisible=False
+                    win.update()
+                    win.mouseVisible=False
+                else:
+                    thisResponse=1
+                    accuracy=0 
+                    win.mouseVisible=False
+                    win.update()
+                    win.mouseVisible=False
+        trials.addData('RT', thisKey.rt)
+        trials.addData('accuracy', accuracy)
         event.clearEvents()
-        dataFile.write('%s %s %s %s %s %s %s %s %s\n' %(trials.thisTrialN, blockTypes[i], trials.thisTrial.coherence, trials.thisTrial.direction, corresp, thisKey[0], accuracy, incorrect, round(thisRT,3)))
-        
+        dataFile.write('%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' %(trial,blockTrial,blockTypes[i],trials.thisTrial.coherence,trials.thisTrial.direction,corresp,thisKey.name, accuracy,round(thisKey.rt,2)))
+
+keys = kb.getKeys()
+while 'space' not in keys:
+    win.mouseVisible=False
+    endscreen1.draw()
+    endscreen2.draw()
+    win.flip()
+    keys = kb.getKeys()
+
+
 win.close()
 core.quit()
