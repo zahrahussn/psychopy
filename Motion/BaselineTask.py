@@ -12,12 +12,14 @@ import platform
 
 params = {'Subject':'001', 'Experimenter':'gr'}
 frameRate=120
-dotSpeed=8.25 #in degrees per second
+dotSpeed=8.25 #in degrees per second (calculated from 0.11 deg/frame speed from Winawer paper with 75Hz monitor)
+dotsize=0.174 #dot size in degrees (calculated from 5pix dot size in aa's monitor with 1024px resolution and 30cm scrren width, assuming viewing distance 57cm)
 blank1=0.5
 fpDuration=0.5
 blank2=0.1
 stimDuration=1
 resx=1920
+screenWidth=57.15 #screen width in cm
 
 #dlg = gui.DlgFromDict(params, title='MotionExp', fixed=['dateStr'])
 #if dlg.OK:
@@ -27,7 +29,7 @@ toFile('lastParams.pickle', params) #save params to file for next time
 
 fileName = params['Experimenter']+'_'+params['Subject']+'_baseline'
 dataFile = open('../../psychopyData/Motion/'+fileName+'.csv', 'a') #a simple text file with 'comma-separated-values'
-dataFile.write('coherence, direction, corresp, response, accuracy, RT\n') 
+dataFile.write('trial\tcoherence\tdirection\tcorresp\tresponse\taccuracy\tRT\n') 
 debug=0
 
 if platform.platform()[0:5] == 'Linux': # if we're on Linux, then we're probably using the viewpixx monitor
@@ -41,16 +43,16 @@ else:
     frameRate=60
 
 # Create a visual window:
-win = visual.Window(fullscr=True, allowGUI = True, monitor = monitor, units='deg', checkTiming=False)
+win = visual.Window(fullscr=True, allowGUI = True, monitor = monitor, units='deg', color=(-0.1,-0.1,-0.1), checkTiming=False)
 #win = visual.Window(fullscr=True, allowGUI = True, monitor = 'testMonitor', winType='pyglet', units = 'deg', checkTiming=False)
 win.mouseVisible=False
 #creating stimuli
 dot_stim = visual.DotStim(win, color=(1.0, 1.0, 1.0), dir=270,
-    nDots=500, fieldShape='circle', fieldPos=(0.0, 0.0), fieldSize=10,
+    nDots=100, fieldShape='circle', fieldPos=(0.0, 0.0), fieldSize=10, opacity=1,
+    dotSize=dotsize*resx/screenWidth,
     dotLife=5,  # number of frames for each dot to be drawn
-    signalDots='same',  
-    noiseDots='direction',  
-    speed=0.01, coherence=0.9)
+    signalDots='same', noiseDots='direction',  
+    speed=dotSpeed/frameRate, coherence=0.9)
 fixation=visual.Circle(win, radius=0.1,  edges=60, units='deg', lineWidth=2, lineColor=[-1,-1,-1], fillColor=[-1,-1,-1], colorSpace='rgb', pos=(0, 0)) 
 blankFrame=visual.TextStim(win, text='', pos=(0, 0))
 instruction1=visual.TextStim(win, text="you will be shown a field of dots moving in different directions.", wrapWidth=20, pos=(0,3))
@@ -75,9 +77,9 @@ stimList=[]
 for direction in [90, 270]:
     for coherence in [0.1, 0.28, 0.35, 0.5, 0.65]:
         stimList.append({'direction': direction, 'coherence': coherence})
-trials = data.TrialHandler(stimList, 10)
-trials.data.addDataType('accuracy')
-trials.data.addDataType('RT')
+trials = data.TrialHandler2(stimList, 2)
+#trials.data.addDataType('accuracy')
+#trials.data.addDataType('RT')
 clockRT = core.Clock() 
 
 
@@ -87,12 +89,15 @@ for thisTrial in trials:
         corresp='p'
     else: corresp='q'
             
-    dot_stim = visual.DotStim(win, units='deg', color=(1.0, 1.0, 1.0), dir=trials.thisTrial.direction,
-    nDots=100, fieldShape='circle', fieldPos=(0.0, 0.0), fieldSize=10, dotSize=5, opacity=1, contrast=1, 
-    dotLife=5,  # number of frames for each dot to be drawn
-    signalDots='same',  # are signal dots 'same' on each frame? (see Scase et al)
-    noiseDots='direction',  # do the noise dots follow random- 'walk', 'direction', or 'position'
-    speed=dotSpeed/frameRate, coherence=trials.thisTrial.coherence)
+    dot_stim.dir=trials.thisTrial.direction
+    dot_stim.coherence=trials.thisTrial.coherence
+#    dot_stim = visual.DotStim(win, units='deg', dir=trials.thisTrial.direction,#color=(1.0, 1.0, 1.0), 
+#    #nDots=100, fieldShape='circle', fieldPos=(0.0, 0.0), #fieldSize=10, dotSize=5, opacity=1, contrast=1, 
+#    #dotLife=5,  # number of frames for each dot to be drawn
+#    #signalDots='same',  # are signal dots 'same' on each frame? (see Scase et al)
+#    #noiseDots='direction',  # do the noise dots follow random- 'walk', 'direction', or 'position'
+#    #speed=dotSpeed, 
+#    coherence=trials.thisTrial.coherence)
 #        
     #instructions
     win.mouseVisible=False
@@ -121,7 +126,7 @@ for thisTrial in trials:
         win.mouseVisible=False
         for thisKey in keys:
             if thisKey.name in ['escape']:
-                dataFile.write('%d\t%s\t%s\t%s\t%s\n' %(trials.thisTrial.coherence,trials.thisTrial.direction,corresp,'NA','NA',round(thisKey.rt,2)))
+                dataFile.write('%d\t%s\t%s\t%s\t%s\t%s\t%s\n' %(trials.thisN,trials.thisTrial.coherence,trials.thisTrial.direction,corresp,'NA','NA',round(thisKey.rt,2)))
                 core.quit()
             elif thisKey.name ==corresp:
                 thisResponse=1
@@ -139,7 +144,7 @@ for thisTrial in trials:
     trials.addData('accuracy', accuracy)
     event.clearEvents()
     #print(thisKey.name)
-    dataFile.write('%d\t%s\t%s\t%s\t%s\t%s\n' %(trials.thisTrial.coherence, trials.thisTrial.direction, corresp, thisKey.name, accuracy, round(thisKey.rt,2)))
+    dataFile.write('%d\t%s\t%s\t%s\t%s\t%s\t%s\n' %(trials.thisN,trials.thisTrial.coherence, trials.thisTrial.direction, corresp, thisKey.name, accuracy, round(thisKey.rt,2)))
 #        for thisKey in allKeys:
 #            if thisKey[0] in ['escape']:core.quit()
 #            elif thisKey[0] in ['up','down']:

@@ -1,34 +1,38 @@
- #This analysis script takes one or more datafiles from BaselineTask as input
- #from a GUI. It then plots the staircases on top of each other on
+ #This analysis script takes the psydat file output by BaselineTas.pyk (file name based on  params)
+ #It then plots the staircases on top of each other on
  #the left and a combined psychometric function from the same data
  #on the right
  
 from psychopy import data, gui, core
 from psychopy.tools.filetools import fromFile
-import pylab
+import pylab, platform
  
-#Open a dialog box to select files from
-files = gui.fileOpenDlg('.')
-if not files:
-    core.quit()
+params = {'Subject':'pilot1', 'Experimenter':'jb'}
+fileName = params['Experimenter']+'_'+params['Subject']+'_baseline'
+filePath = '../../psychopyData/Motion/'+fileName+'.psydat'
 
-#get the data from all the files
+#Open a dialog box to select files from  # this doesn't work in Link214 at the moment
+#files = gui.fileOpenDlg('.')
+#if not files:
+#    core.quit()
+
+#get the data from the psydat files
 allIntensities, allResponses = [],[]
-for thisFileName in files:
-    thisDat = fromFile(thisFileName)
-    allIntensities.append( thisDat.data.coherence)
-    allResponses.append( thisDat.data.accuracy)
+trials = fromFile(filePath)
+allIntensities.append(trials.data.coherence)
+allResponses.append(trials.data.accuracy)
 
 #plot each staircase
-pylab.subplot(121)
-colors = 'brgkcmbrgkcm'
-lines, names = [],[]
-for fileN, thisStair in enumerate(allIntensities):
-    #lines.extend(pylab.plot(thisStair))
-    #names = files[fileN]
-    pylab.plot(thisStair, label=files[fileN])
-#pylab.legend()
-
+if platform.platform()[0:5] != 'Linux':  # plotting doesn't work in Link214 at the moment
+    pylab.subplot(121)
+    colors = 'brgkcmbrgkcm'
+    lines, names = [],[]
+    for fileN, thisStair in enumerate(allIntensities):
+        #lines.extend(pylab.plot(thisStair))
+        #names = files[fileN]
+        pylab.plot(thisStair, label=files[fileN])
+    #pylab.legend()
+    
 #get combined data
 combinedInten, combinedResp, combinedN = \
              data.functionFromStaircase(allIntensities, allResponses, 5)
@@ -40,14 +44,15 @@ thresAccuracy = 0.99
 thresh = fit.inverse(thresAccuracy)
 print(thresh)
 
-#plot curve
-pylab.subplot(122)
-pylab.plot(smoothInt, smoothResp, '-')
-pylab.plot([thresh, thresh],[0,thresAccuracy],'--'); pylab.plot([0, thresh],\
-[thresAccuracy,thresAccuracy],'--')
-pylab.title('threshold = %0.3f' %(thresh))
-#plot points
-pylab.plot(combinedInten, combinedResp, 'o')
-pylab.ylim([0,1])
-
-pylab.show()
+if platform.platform()[0:5] != 'Linux':  # plotting doesn't work in Link214 at the moment
+    #plot curve
+    pylab.subplot(122)
+    pylab.plot(smoothInt, smoothResp, '-')
+    pylab.plot([thresh, thresh],[0,thresAccuracy],'--'); pylab.plot([0, thresh],\
+    [thresAccuracy,thresAccuracy],'--')
+    pylab.title('threshold = %0.3f' %(thresh))
+    #plot points
+    pylab.plot(combinedInten, combinedResp, 'o')
+    pylab.ylim([0,1])
+    
+    pylab.show()
