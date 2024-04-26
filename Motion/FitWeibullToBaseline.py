@@ -7,21 +7,29 @@ from psychopy import data, gui, core
 from psychopy.tools.filetools import fromFile
 import pylab, platform
  
-params = {'Subject':'pilot1', 'Experimenter':'jb'}
-fileName = params['Experimenter']+'_'+params['Subject']+'_baseline'
-filePath = '../../psychopyData/Motion/'+fileName+'.psydat'
-
-#Open a dialog box to select files from  # this doesn't work in Link214 at the moment
-#files = gui.fileOpenDlg('.')
-#if not files:
-#    core.quit()
-
 #get the data from the psydat files
-allIntensities, allResponses = [],[]
-trials = fromFile(filePath)
-allIntensities.append(trials.data.coherence)
-allResponses.append(trials.data.accuracy)
-
+if platform.platform()[0:5] == 'Linux':
+    params = {'Subject':'pilot1', 'Experimenter':'jb'}
+    fileName = params['Experimenter']+'_'+params['Subject']+'_baseline'
+    filePath = '../../psychopyData/Motion/'+fileName+'.psydat'
+    
+    allIntensities, allResponses = [],[]
+    trials = fromFile(filePath)
+    allIntensities.append(trials.data.coherence)
+    allResponses.append(trials.data.accuracy)
+    
+else:
+    # Open a dialog box to select files from  # this doesn't work in Link214 at the moment
+    files = gui.fileOpenDlg('../../psychopyData/Motion/')
+    if not files:
+        core.quit()
+    
+    allIntensities, allResponses = [],[]
+    for thisFileName in files:
+        trials = fromFile(thisFileName)
+        allIntensities.append(trials.data.coherence)
+        allResponses.append(trials.data.accuracy)
+    
 #plot each staircase
 if platform.platform()[0:5] != 'Linux':  # plotting doesn't work in Link214 at the moment
     pylab.subplot(121)
