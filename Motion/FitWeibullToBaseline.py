@@ -1,7 +1,9 @@
- #This analysis script takes the psydat file output by BaselineTas.pyk (file name based on  params)
- #It then plots the staircases on top of each other on
- #the left and a combined psychometric function from the same data
- #on the right
+ #This analysis script takes the psydat file output by BaselineTask.py (file name based on  params)
+ #It then plots the staircases on top of each other on the left
+ #and a combined psychometric function from the same data on the right
+ 
+ # Note that the fits are not satisfactory because they do not allow for lapses in attention
+ # (a third saturation parameter should be used for the fit, but that's not implemented in psychopy)
  
 from psychopy import data, gui, core
 from psychopy.tools.filetools import fromFile
@@ -74,5 +76,6 @@ if platform.platform()[0:5] != 'Linux':  # plotting doesn't work in Link214 at t
 # print results
 print("\n%s\n" % fileName)
 print(pandas.DataFrame( np.transpose(np.vstack((combinedInten,combinedResp,fit.eval(combinedInten),combinedN))),range(0,len(combinedN)),["Coherence","Accuracy","Fitted","N trials"]))
-print("\n99%% Threshold = %.3f\n" % thresh)
+print("\nFitted parameters = alpha = %.3f, beta = %.3f" % (fit.params[0],fit.params[1]))
+print("\n%d%% Threshold = %.3f\n" % (thresAccuracy*100,thresh))
 
