@@ -10,7 +10,7 @@ import numpy as np
  
 #get the data from the psydat files
 if platform.platform()[0:5] == 'Linux':
-    params = {'Subject':'pilot1', 'Experimenter':'jb'}
+    params = {'Subject':'pilot1', 'Experimenter':'aa'}
     fileName = params['Experimenter']+'_'+params['Subject']+'_baseline'
     filePath = '../../psychopyData/Motion/'+fileName+'.psydat'
     
@@ -31,6 +31,8 @@ else:
         allIntensities.append(trials.data.coherence)
         allResponses.append(trials.data.accuracy)
     
+    fileName = files
+    
 #plot each staircase
 if platform.platform()[0:5] != 'Linux':  # plotting doesn't work in Link214 at the moment
     pylab.subplot(121)
@@ -44,9 +46,12 @@ if platform.platform()[0:5] != 'Linux':  # plotting doesn't work in Link214 at t
     
 #get combined data
 combinedInten, combinedResp, combinedN = \
-             data.functionFromStaircase(allIntensities, allResponses, 5)
+             data.functionFromStaircase(allIntensities, allResponses, 'unique')
 
 #fit curve - in this case using a Weibull function
+#combinedInten.append(1) # force the curve to approach 100% correct
+#combinedResp.append(1) # when coherence is 100%
+#combinedN.append(0)
 fit = data.FitWeibull(combinedInten, combinedResp, guess=[0.2, 0.5])
 smoothInt = pylab.arange(min(combinedInten), max(combinedInten), 0.001)
 smoothResp = fit.eval(smoothInt)
@@ -67,7 +72,7 @@ if platform.platform()[0:5] != 'Linux':  # plotting doesn't work in Link214 at t
     pylab.show()
 
 # print results
-print("\n%s\n" % files)
+print("\n%s\n" % fileName)
 print(pandas.DataFrame( np.transpose(np.vstack((combinedInten,combinedResp,fit.eval(combinedInten),combinedN))),range(0,len(combinedN)),["Coherence","Accuracy","Fitted","N trials"]))
 print("\n99%% Threshold = %.3f\n" % thresh)
 

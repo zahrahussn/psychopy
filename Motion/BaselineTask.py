@@ -10,7 +10,8 @@ from psychopy.hardware import keyboard
 import platform
 
 
-params = {'Subject':'001', 'Experimenter':'gr'}
+params = {'Subject':'pilot1', 'Experimenter':'aa'}
+nTrialsPerCondition = 12
 frameRate=120
 dotSpeed=8.25 #in degrees per second (calculated from 0.11 deg/frame speed from Winawer paper with 75Hz monitor)
 dotsize=0.174 #dot size in degrees (calculated from 5pix dot size in aa's monitor with 1024px resolution and 30cm scrren width, assuming viewing distance 57cm)
@@ -56,7 +57,7 @@ dot_stim = visual.DotStim(win, color=(1.0, 1.0, 1.0), dir=270,
 fixation=visual.Circle(win, radius=0.1,  edges=60, units='deg', lineWidth=2, lineColor=[-1,-1,-1], fillColor=[-1,-1,-1], colorSpace='rgb', pos=(0, 0)) 
 blankFrame=visual.TextStim(win, text='', pos=(0, 0))
 instruction1=visual.TextStim(win, text="you will be shown a field of dots moving in different directions.", wrapWidth=20, pos=(0,3))
-instruction2=visual.TextStim(win, text="If the general direction of the dots is UP, press P. If the general direction is DOWN, press Q", wrapWidth=25, pos=(0, 0))
+instruction2=visual.TextStim(win, text="If the general direction of the dots is UP, press Q. If the general direction is DOWN, press M", wrapWidth=25, pos=(0, 0))
 instruction3 = visual.TextStim(win, text='Press the spacebar to continue', pos=(0,-3), height=0.6, wrapWidth=20, units='deg')
 endscreen1 = visual.TextStim(win, text='End of experiment', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
 endscreen2 = visual.TextStim(win, text='Press space to exit', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
@@ -75,19 +76,17 @@ while 'space' not in keys:
 # setup trial handler
 stimList=[]
 for direction in [90, 270]:
-    for coherence in [0.1, 0.28, 0.35, 0.5, 0.65]:
+    for coherence in [0.05, 0.15, 0.25, 0.35, 0.45,  0.55, 0.65, 0.9 ]:
         stimList.append({'direction': direction, 'coherence': coherence})
-trials = data.TrialHandler2(stimList, 2)
-#trials.data.addDataType('accuracy')
-#trials.data.addDataType('RT')
+trials = data.TrialHandler2(stimList, nTrialsPerCondition)
 clockRT = core.Clock() 
 
 
 for thisTrial in trials:
     
     if trials.thisTrial.direction==90:
-        corresp='p'
-    else: corresp='q'
+        corresp='q'
+    else: corresp='m'
             
     dot_stim.dir=trials.thisTrial.direction
     dot_stim.coherence=trials.thisTrial.coherence
@@ -122,7 +121,7 @@ for thisTrial in trials:
     kb.clock.reset()
     thisResponse = None
     while thisResponse == None:
-        keys = kb.getKeys(keyList=['escape','p','q'])
+        keys = kb.getKeys(keyList=['escape','q','m'])
         win.mouseVisible=False
         for thisKey in keys:
             if thisKey.name in ['escape']:

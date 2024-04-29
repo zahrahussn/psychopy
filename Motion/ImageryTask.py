@@ -9,16 +9,19 @@ import numpy as np
 from psychopy.hardware import keyboard
 import platform
 
-params = {'Subject':'001', 'Experimenter':'aa'}
+params = {'Subject':'pilot1', 'Experimenter':'aa'}
 frameRate=60
 resx=1920
 speed=2.7
 blank1=1
-dotSpeed=8.25 #in degrees per second
+dotSpeed=8.25 #in degrees per second (calculated from 0.11 deg/frame speed from Winawer paper with 75Hz monitor)
+dotsize=0.174 #dot size in degrees (calculated from 5pix dot size in aa's monitor with 1024px resolution and 30cm scrren width, assuming viewing distance 57cm)
+screenWidth=57.15 #screen width in cm
 fpDuration=0.5
 blank2=0.1
 stimDuration=1
 cueDuration=1
+gaborDuration=6
 sqrDuration0=6
 upVert=[(0.5,0),(0,0.5),(-0.5,0),(-0.125,0),(-0.125,-0.5),(0.125,-0.5),(0.125,0)]
 downVert=[(0.5,0),(0,-0.5),(-0.5,0),(-0.125,0),(-0.125,0.5),(0.125,0.5),(0.125,0)]
@@ -30,8 +33,8 @@ C99= 0.5 #insert coherence at 99% performance here
 toFile('lastParams.pickle', params) #save params to file for next time
 
 fileName = params['Experimenter']+'_'+params['Subject']+'_imagery'
-dataFile = open(fileName+'.csv', 'a')#a simple text file with 'comma-separated-values'
-dataFile.write('trial, blocktrial, imagery_direction, coherence, direction, corresp, subjectResp, accuracy, incorrect, RT\n')
+dataFile = open('../../psychopyData/Motion/'+fileName+'.csv', 'a')#a simple text file with 'comma-separated-values'
+dataFile.write('trial, blocktrial, imagery_direction, coherence, dot_direction, corresp, subjectResp, accuracy, RT\n')
 
 debug=0
 
@@ -54,19 +57,19 @@ adapt_gabor = visual.GratingStim(win, tex="sqr", mask="sqr", texRes=256,
            size=[15.0, 10.0], sf=[1, 0], ori = 270, name='gabor1', pos=(0,0))
 arrowVert = [(0.5,0),(0,0.5),(-0.5,0),(-0.125,0),(-0.125,-0.5),(0.125,-0.5),(0.125,0)]
 arrow = ShapeStim(win, vertices=arrowVert, fillColor='white', lineWidth=2, lineColor='black', pos=(0,0))
-dot_stim = visual.DotStim(win, color=(1.0, 1.0, 1.0), dir=270,
-    nDots=500, fieldShape='circle', fieldPos=(0.0, 0.0), fieldSize=1,
+dot_stim = visual.DotStim(win, units='deg', color=(1.0, 1.0, 1.0), dir=270, opacity=1,
+    nDots=100, fieldShape='circle', fieldPos=(0.0, 0.0), fieldSize=10,
     dotLife=5,  # number of frames for each dot to be drawn
-    signalDots='same', 
-    noiseDots='direction',  
-    speed=dotSpeed, coherence=0.9)
-fixation=visual.Circle(win, radius=0.1,  edges=128, units='deg', lineWidth=2, lineColor=[-1,-1,-1], fillColor=False, colorSpace='rgb', pos=(0, 0)) 
+    signalDots='same', noiseDots='direction',  
+    dotSize=dotsize*resx/screenWidth,
+    speed=dotSpeed/frameRate, coherence=0.9)
+fixation=visual.Circle(win, radius=0.1,  edges=60, units='deg', lineWidth=2, lineColor=[-1,-1,-1], fillColor=[-1,-1,-1], colorSpace='rgb', pos=(0, 0))
 blankFrame=visual.TextStim(win, text='', pos=(0, 0))
 clockRT = core.Clock()
 instruction1=visual.TextStim(win, text='You will be shown striped patterns moving up or down.', pos=(0,5))
 instruction2=visual.TextStim(win, text='Try to attend to the size, color, and speed of the stripes, so that later you can picture them clearly even when the screen is blank.', wrapWidth=25, pos=(0,0))
 instruction3=visual.TextStim(win, text='On the next screen, you will see an arrow on an image of the striped pattern. Remember the direction the arrow is pointing in as you will need to imagine the striped pattern moving in that direction in the next stage.', wrapWidth=35, pos=(0,6))
-instruction4=visual.TextStim(win, text='Once the arrow disappears, a flashing square will appear. Focus on it while imagining the moving stripes, after which you will see the dots and need to press either P for UP or Q for DOWN. ', pos=(0,0), wrapWidth=35, units='deg')
+instruction4=visual.TextStim(win, text='Once the arrow disappears, a flashing square will appear. Focus on it while imagining the moving stripes, after which you will see the dots and need to press either Q for UP or M for DOWN. ', pos=(0,0), wrapWidth=35, units='deg')
 breakscreen=visual.TextStim(win, text='Press the spacebar to continue', pos=(0,-5), wrapWidth=20, units='deg')
 breakscreen1=visual.TextStim(win, text='End of block', pos=(0,-0), wrapWidth=20, units='deg')
 endscreen1 = visual.TextStim(win, text='End of experiment', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
@@ -110,9 +113,7 @@ for i in [0,1,2,3,4,5,6,7]:
     for direction in [90, 270]:
         for coherence in [C99, C99/2, C99/4]: # coherence at 99% performance, half and then quarter of that
             stimList.append({'direction': direction, 'coherence': coherence})
-    trials = data.TrialHandler(stimList, 1)
-    trials.data.addDataType('accuracy')
-    trials.data.addDataType('RT')
+    trials = data.TrialHandler2(stimList, 4)
     clockRT = core.Clock() 
     
     response=''
@@ -123,9 +124,9 @@ for i in [0,1,2,3,4,5,6,7]:
     #        win.update()
     
     win.mouseVisible=False
-    for frameN in range(int(round(stimDuration*2*frameRate))):
-        adapt_gabor.setOri(90)
-        adapt_gabor.setOpacity(1)
+    adapt_gabor.setOri(90)
+    adapt_gabor.setOpacity(1)
+    for frameN in range(int(round(gaborDuration*frameRate))):
         adapt_gabor.phase += speed/frameRate
         adapt_gabor.draw()
         p=np.cos((frameN*speed/frameRate)*2*np.pi)
@@ -134,12 +135,13 @@ for i in [0,1,2,3,4,5,6,7]:
         # Draw the stimulus and display it.
         sqr.draw()
         win.update()
+    
     # show blank screen for 1s
     for frameN in range(int(round(blank1*frameRate))):
         blankFrame.draw()
         win.update()
-    for frameN in range(int(round(stimDuration*2*frameRate))):
-        adapt_gabor.setOri(270)
+    adapt_gabor.setOri(270)
+    for frameN in range(int(round(gaborDuration*frameRate))):
         adapt_gabor.phase += speed/frameRate
         adapt_gabor.draw() 
         p=np.cos((frameN*speed/frameRate)*2*np.pi)
@@ -152,8 +154,8 @@ for i in [0,1,2,3,4,5,6,7]:
     for frameN in range(int(round(blank1*frameRate))):
         blankFrame.draw()
         win.update()
-    for frameN in range(int(round(stimDuration*2*frameRate))):
-        adapt_gabor.setOri(90)
+    adapt_gabor.setOri(90)
+    for frameN in range(int(round(gaborDuration*frameRate))):
         adapt_gabor.phase += speed/frameRate
         adapt_gabor.draw()
         p=np.cos((frameN*speed/frameRate)*2*np.pi)
@@ -166,8 +168,8 @@ for i in [0,1,2,3,4,5,6,7]:
     for frameN in range(int(round(blank1*frameRate))):
         blankFrame.draw()
         win.update()
-    for frameN in range(int(round(stimDuration*2*frameRate))):
-        adapt_gabor.setOri(270)
+    adapt_gabor.setOri(270)
+    for frameN in range(int(round(gaborDuration*frameRate))):
         adapt_gabor.phase += speed/frameRate
         adapt_gabor.draw()
         p=np.cos((frameN*speed/frameRate)*2*np.pi)
@@ -197,21 +199,17 @@ for i in [0,1,2,3,4,5,6,7]:
         blockTrial=blockTrial+1
         trial=trial+1
         
-        if trials.thisTrialN==0:
-           sqrDuration=10
+        if trials.thisN==0:
+           sqrDuration=60
         else: sqrDuration=sqrDuration0
         print(sqrDuration)
         if trials.thisTrial.direction==90:
-            corresp='p'
-        else: corresp='q'
+            corresp='q'
+        else: corresp='m'
                 
-        
-        dot_stim = visual.DotStim(win, units='deg', color=(1.0, 1.0, 1.0), dir=trials.thisTrial.direction,
-        nDots=100, fieldShape='circle', fieldPos=(0.0, 0.0), fieldSize=10, dotSize=5, 
-        dotLife=5,  # number of frames for each dot to be drawn
-        signalDots='same',  # are signal dots 'same' on each frame? (see Scase et al)
-        noiseDots='direction',  # do the noise dots follow random- 'walk', 'direction', or 'position'
-        speed=dotSpeed/frameRate, coherence=trials.thisTrial.coherence)
+        dot_stim.dir=trials.thisTrial.direction
+        dot_stim.coherence=trials.thisTrial.coherence
+    
     #        
         #instructions
         win.mouseVisible=False
@@ -251,7 +249,7 @@ for i in [0,1,2,3,4,5,6,7]:
             win.update()
         while thisResponse == None: #could be put after
         # collect response
-            keys = kb.getKeys(keyList=['escape','p','q'])
+            keys = kb.getKeys(keyList=['escape','q','m'])
             win.mouseVisible=False
             for thisKey in keys:
                 if thisKey.name in ['escape']: 
