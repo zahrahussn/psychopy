@@ -5,7 +5,8 @@
  
 from psychopy import data, gui, core
 from psychopy.tools.filetools import fromFile
-import pylab, platform
+import pylab, platform, pandas
+import numpy as np
  
 #get the data from the psydat files
 if platform.platform()[0:5] == 'Linux':
@@ -44,13 +45,13 @@ if platform.platform()[0:5] != 'Linux':  # plotting doesn't work in Link214 at t
 #get combined data
 combinedInten, combinedResp, combinedN = \
              data.functionFromStaircase(allIntensities, allResponses, 5)
+
 #fit curve - in this case using a Weibull function
 fit = data.FitWeibull(combinedInten, combinedResp, guess=[0.2, 0.5])
 smoothInt = pylab.arange(min(combinedInten), max(combinedInten), 0.001)
 smoothResp = fit.eval(smoothInt)
 thresAccuracy = 0.99
 thresh = fit.inverse(thresAccuracy)
-print(thresh)
 
 if platform.platform()[0:5] != 'Linux':  # plotting doesn't work in Link214 at the moment
     #plot curve
@@ -64,3 +65,9 @@ if platform.platform()[0:5] != 'Linux':  # plotting doesn't work in Link214 at t
     pylab.ylim([0,1])
     
     pylab.show()
+
+# print results
+print("\n%s\n" % files)
+print(pandas.DataFrame( np.transpose(np.vstack((combinedInten,combinedResp,fit.eval(combinedInten),combinedN))),range(0,len(combinedN)),["Coherence","Accuracy","Fitted","N trials"]))
+print("\n99%% Threshold = %.3f\n" % thresh)
+
