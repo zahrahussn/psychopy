@@ -10,11 +10,11 @@ from psychopy.hardware import keyboard
 import platform
 
 
-params = {'Subject':'pilot1', 'Experimenter':'aa'}
+params = {'Subject':'test', 'Experimenter':'aa'}
 nTrialsPerCondition = 12
 frameRate=120
 dotSpeed=8.25 #in degrees per second (calculated from 0.11 deg/frame speed from Winawer paper with 75Hz monitor)
-dotsize=0.174 #dot size in degrees (calculated from 5pix dot size in aa's monitor with 1024px resolution and 30cm scrren width, assuming viewing distance 57cm)
+dotsize=0.174 #dot size in degrees (calculated from 5pix dot size in aa's monitor with 1024px resolution and 30cm screen width, assuming viewing distance 57cm)
 blank1=0.5
 fpDuration=0.5
 blank2=0.1
@@ -59,6 +59,8 @@ blankFrame=visual.TextStim(win, text='', pos=(0, 0))
 instruction1=visual.TextStim(win, text="you will be shown a field of dots moving in different directions.", wrapWidth=20, pos=(0,3))
 instruction2=visual.TextStim(win, text="If the general direction of the dots is UP, press Q. If the general direction is DOWN, press M", wrapWidth=25, pos=(0, 0))
 instruction3 = visual.TextStim(win, text='Press the spacebar to continue', pos=(0,-3), height=0.6, wrapWidth=20, units='deg')
+breakscreen1 = visual.TextStim(win, text='You are halfway through the task. You may now take a break.', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
+breakscreen2 = visual.TextStim(win, text='Press the spacebar when you wish to resume the task.', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
 endscreen1 = visual.TextStim(win, text='End of experiment', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
 endscreen2 = visual.TextStim(win, text='Press space to exit', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
 kb = keyboard.Keyboard()
@@ -83,6 +85,15 @@ clockRT = core.Clock()
 
 
 for thisTrial in trials:
+    if trials.thisN==96:
+        keys = kb.getKeys()
+        while 'space' not in keys:
+            win.mouseVisible=False
+            breakscreen1.draw()
+            breakscreen2.draw()
+            win.flip()
+            #keyPress = event.waitKeys()
+            keys = kb.getKeys()
     
     if trials.thisTrial.direction==90:
         corresp='q'

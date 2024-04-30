@@ -10,7 +10,7 @@ from psychopy.hardware import keyboard
 import platform
 
 
-params = {'Subject':'pilot1', 'Experimenter':'aa'}
+params = {'Subject':'test', 'Experimenter':'aa'}
 frameRate=120
 blank1=0.5
 dotSpeed=8.25 #in degrees per second (calculated from 0.11 deg/frame speed from Winawer paper with 75Hz monitor)
@@ -23,7 +23,7 @@ C99= 0.55 #insert oherence level at 99% performance accuracy here
 dotsize=0.174 #dot size in degrees (calculated from 5pix dot size in aa's monitor with 1024px resolution and 30cm scrren width, assuming viewing distance 57cm)
 screenWidth=57.15 #screen width in cm
 
-blockTypes=[90,90,90,90,270,270,270,270]
+blockTypes=[90,90,270,270]
 random.shuffle(blockTypes)
 
 #dlg = gui.DlgFromDict(params, title='MotionExp', fixed=['dateStr'])
@@ -66,7 +66,7 @@ instruction3 = visual.TextStim(win, text='Press the spacebar to continue', pos=(
 adapt_gabor = visual.GratingStim(win, tex="sqr", mask="sqr", texRes=256, 
            size=[15.0, 10.0], sf=[1, 0], ori = 90, name='gabor1')
 fixationSqr= ShapeStim(win, vertices=((-0.25,-0.25),(-0.25,0.25),(0.25,0.25),(0.25,-0.25)), fillColor='black', pos=(0,0), lineColor=None)
-breakscreen1 = visual.TextStim(win, text='End of block', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
+breakscreen1 = visual.TextStim(win, text='End of block. You may now take a break.', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
 breakscreen2 = visual.TextStim(win, text='Press the spacebar to continue', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
 endscreen1 = visual.TextStim(win, text='End of experiment', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
 endscreen2 = visual.TextStim(win, text='Press space to exit', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
@@ -83,13 +83,13 @@ while 'space' not in keys:
     keys = kb.getKeys()
 
 trial=0;
-for i in [0,1,2,3,4,5,6,7]:
+for i in [0,1,2,3]:
     win.mouseVsible=False
     adapt_gabor = visual.GratingStim(win, tex="sqr", mask="sqr", texRes=256, 
            size=[15.0, 10.0], sf=[1, 0], ori = blockTypes[i], name='gabor1')
     #trials.data.addDataType('adapt_direction')
 
-    if i in [1,2,3,4,5,6,7]:
+    if i in [2]:
         keys = kb.getKeys()
         while 'space' not in keys:
             breakscreen1.draw()
@@ -105,7 +105,7 @@ for i in [0,1,2,3,4,5,6,7]:
     for direction in [90, 270]:
         for coherence in [C99, C99/2, C99/4]: #coherence at 99% performance, half and quarter of that
             stimList.append({'direction': direction, 'coherence': coherence})
-    trials = data.TrialHandler2(stimList, 4)
+    trials = data.TrialHandler2(stimList, 8)
     clockRT = core.Clock() 
     
     response=''

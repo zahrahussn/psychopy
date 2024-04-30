@@ -9,7 +9,7 @@ import numpy as np
 from psychopy.hardware import keyboard
 import platform
 
-params = {'Subject':'pilot1', 'Experimenter':'aa'}
+params = {'Subject':'test', 'Experimenter':'aa'}
 frameRate=60
 resx=1920
 speed=2.7
@@ -66,12 +66,14 @@ dot_stim = visual.DotStim(win, units='deg', color=(1.0, 1.0, 1.0), dir=270, opac
 fixation=visual.Circle(win, radius=0.1,  edges=60, units='deg', lineWidth=2, lineColor=[-1,-1,-1], fillColor=[-1,-1,-1], colorSpace='rgb', pos=(0, 0))
 blankFrame=visual.TextStim(win, text='', pos=(0, 0))
 clockRT = core.Clock()
-instruction1=visual.TextStim(win, text='You will be shown striped patterns moving up or down.', pos=(0,5))
-instruction2=visual.TextStim(win, text='Try to attend to the size, color, and speed of the stripes, so that later you can picture them clearly even when the screen is blank.', wrapWidth=25, pos=(0,0))
-instruction3=visual.TextStim(win, text='On the next screen, you will see an arrow on an image of the striped pattern. Remember the direction the arrow is pointing in as you will need to imagine the striped pattern moving in that direction in the next stage.', wrapWidth=35, pos=(0,6))
-instruction4=visual.TextStim(win, text='Once the arrow disappears, a flashing square will appear. Focus on it while imagining the moving stripes, after which you will see the dots and need to press either Q for UP or M for DOWN. ', pos=(0,0), wrapWidth=35, units='deg')
-breakscreen=visual.TextStim(win, text='Press the spacebar to continue', pos=(0,-5), wrapWidth=20, units='deg')
-breakscreen1=visual.TextStim(win, text='End of block', pos=(0,-0), wrapWidth=20, units='deg')
+instruction1=visual.TextStim(win, text='You will be shown striped patterns moving up or down.', pos=(0,3))
+instruction2=visual.TextStim(win, text='Try to attend to the size, color, and speed of the stripes, so that later you can picture them clearly even when the screen is blank.', wrapWidth=25, pos=(0,-1))
+instruction3=visual.TextStim(win, text='On the next screen, you will see an arrow on an image of the striped pattern. Remember the direction the arrow is pointing in.', wrapWidth=35, pos=(0,7))
+instruction4=visual.TextStim(win, text='In the next stage, you will need to imagine the striped pattern moving in the same direction as the arrow.', wrapWidth=35, pos=(0,4))
+instruction5=visual.TextStim(win, text='Once the arrow disappears, a flashing square will appear. Focus on it while imagining the moving stripes in the direction of the arrow', wrapWidth=35, pos=(0,1))
+instruction6=visual.TextStim(win, text='Once the flashing square disappears, you will see moving dots. If the dots generally move UP, press Q. If they move DOWN, press M.', pos=(0,-3), wrapWidth=35, units='deg')
+breakscreen=visual.TextStim(win, text='Press the spacebar to continue', pos=(0,-7), wrapWidth=20, units='deg')
+breakscreen1=visual.TextStim(win, text='End of block. You may now take a break.', pos=(0,-0), wrapWidth=20, units='deg')
 endscreen1 = visual.TextStim(win, text='End of experiment', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
 endscreen2 = visual.TextStim(win, text='Press space to exit', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
 color = np.array([1, 1, 1])
@@ -105,7 +107,7 @@ for i in [0,1,2,3,4,5,6,7]:
             breakscreen.draw()
             win.mouseVisible=False
             win.update()
-            win.mouseVisible=False
+#            win.mouseVisible=False/home/zahra/.local/lib/python3.10/site-packages/psychopy/demos/coder/experiment control
             keys = kb.getKeys()
             win.mouseVisible=False
     # setup trial handler
@@ -187,6 +189,8 @@ for i in [0,1,2,3,4,5,6,7]:
     while 'space' not in keys:
         instruction3.draw()
         instruction4.draw()
+        instruction5.draw()
+        instruction6.draw()
         breakscreen.draw()
         win.mouseVisible=False
         win.update()
