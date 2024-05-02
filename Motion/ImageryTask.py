@@ -9,8 +9,9 @@ import numpy as np
 from psychopy.hardware import keyboard
 import platform
 
-params = {'Subject':'test', 'Experimenter':'aa'}
-frameRate=60
+params = {'Subject':'pilot2', 'Experimenter':'aa'}
+C90= 0.45 #insert coherence at 99% performance here
+frameRate=120
 resx=1920
 speed=2.7
 blank1=1
@@ -113,9 +114,9 @@ for i in [0,1,2,3,4,5,6,7]:
     # setup trial handler
     stimList=[]
     for direction in [90, 270]:
-        for coherence in [C99, C99/2, C99/4]: # coherence at 99% performance, half and then quarter of that
+        for coherence in [C90, C90/2, C90/4]: # coherence at 99% performance, half and then quarter of that
             stimList.append({'direction': direction, 'coherence': coherence})
-    trials = data.TrialHandler2(stimList, 4)
+    trials = data.TrialHandler2(stimList, nTrialsPerCondition)
     clockRT = core.Clock() 
     
     response=''
