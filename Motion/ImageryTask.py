@@ -9,8 +9,9 @@ import numpy as np
 from psychopy.hardware import keyboard
 import platform
 
-params = {'Subject':'pilot2', 'Experimenter':'aa'}
-C90= 0.45 #insert coherence at 99% performance here
+params = {'Subject':'INSERTSUB', 'Experimenter':'aa'}
+C90= 3 #insert coherence at 99% performance here
+nTrialsPerCondition=4
 frameRate=120
 resx=1920
 speed=2.7
@@ -26,16 +27,15 @@ gaborDuration=6
 sqrDuration0=6
 upVert=[(0.5,0),(0,0.5),(-0.5,0),(-0.125,0),(-0.125,-0.5),(0.125,-0.5),(0.125,0)]
 downVert=[(0.5,0),(0,-0.5),(-0.5,0),(-0.125,0),(-0.125,0.5),(0.125,0.5),(0.125,0)]
-blockTypes=['up','up','up','up','down','down','down','down']
+blockTypes=['up','up','down','down']
 random.shuffle(blockTypes)
-C99= 0.5 #insert coherence at 99% performance here
 
 
 toFile('lastParams.pickle', params) #save params to file for next time
 
 fileName = params['Experimenter']+'_'+params['Subject']+'_imagery'
 dataFile = open('../../psychopyData/Motion/'+fileName+'.csv', 'a')#a simple text file with 'comma-separated-values'
-dataFile.write('trial, blocktrial, imagery_direction, coherence, dot_direction, corresp, subjectResp, accuracy, RT\n')
+dataFile.write('trial\tblocktrial\timagery_direction\tcoherence\tdot_direction\tcorresp\tsubjectResp\taccuracy\tRT\n')
 
 debug=0
 
@@ -70,12 +70,11 @@ clockRT = core.Clock()
 instruction1=visual.TextStim(win, text='You will be shown striped patterns moving up or down.', pos=(0,3))
 instruction2=visual.TextStim(win, text='Try to attend to the size, color, and speed of the stripes, so that later you can picture them clearly even when the screen is blank.', wrapWidth=25, pos=(0,-1))
 instruction3=visual.TextStim(win, text='On the next screen, you will see an arrow on an image of the striped pattern. Remember the direction the arrow is pointing in.', wrapWidth=35, pos=(0,7))
-instruction4=visual.TextStim(win, text='In the next stage, you will need to imagine the striped pattern moving in the same direction as the arrow.', wrapWidth=35, pos=(0,4))
-instruction5=visual.TextStim(win, text='Once the arrow disappears, a flashing square will appear. Focus on it while imagining the moving stripes in the direction of the arrow', wrapWidth=35, pos=(0,1))
-instruction6=visual.TextStim(win, text='Once the flashing square disappears, you will see moving dots. If the dots generally move UP, press Q. If they move DOWN, press M.', pos=(0,-3), wrapWidth=35, units='deg')
+instruction5=visual.TextStim(win, text='Once the arrow disappears, a flashing square will appear. Focus on it while imagining the moving stripes in the direction of the arro.w', wrapWidth=35, pos=(0,1))
+instruction6=visual.TextStim(win, text='After that, you will see moving dots. If the dots generally move UP, press Q. If they move DOWN, press M.', pos=(0,-3), wrapWidth=35, units='deg')
 breakscreen=visual.TextStim(win, text='Press the spacebar to continue', pos=(0,-7), wrapWidth=20, units='deg')
 breakscreen1=visual.TextStim(win, text='End of block. You may now take a break.', pos=(0,-0), wrapWidth=20, units='deg')
-endscreen1 = visual.TextStim(win, text='End of experiment', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
+endscreen1 = visual.TextStim(win, text='End of task', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
 endscreen2 = visual.TextStim(win, text='Press space to exit', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
 color = np.array([1, 1, 1])
 sqrVert = [(-0.25,-0.25),(-0.25,0.25),(0.25,0.25),(0.25,-0.25)]
@@ -92,7 +91,7 @@ while 'space' not in keys:
     keys = kb.getKeys()
 
 trial=0;
-for i in [0,1,2,3,4,5,6,7]:
+for i in [0,1,2,3]:
     if blockTypes[i]=='up':
         arrow = ShapeStim(win, vertices=upVert, fillColor='white', lineWidth=2, lineColor='black', pos=(0,0))
     else: arrow = ShapeStim(win, vertices=downVert, fillColor='white', lineWidth=2, lineColor='black', pos=(0,0))

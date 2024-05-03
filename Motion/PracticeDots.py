@@ -11,7 +11,7 @@ from psychopy import sound
 import platform
 
 params = {'Subject':'pilot3', 'Experimenter':'aa'}
-nTrialsPerCondition = 5
+nTrialsPerCondition = 3
 frameRate=120
 dotSpeed=8.25 #in degrees per second (calculated from 0.11 deg/frame speed from Winawer paper with 75Hz monitor)
 dotsize=0.174 #dot size in degrees (calculated from 5pix dot size in aa's monitor with 1024px resolution and 30cm screen width, assuming viewing distance 57cm)

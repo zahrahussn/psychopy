@@ -11,15 +11,17 @@ import platform
 
 
 params = {'Subject':'test', 'Experimenter':'aa'}
+C90= 0.5 #insert coherence level at 90% performance accuracy here
+nTrialsPerCondition=8
 frameRate=120
 blank1=0.5
 dotSpeed=8.25 #in degrees per second (calculated from 0.11 deg/frame speed from Winawer paper with 75Hz monitor)
 fpDuration=0.5
 blank2=0.1
+adaptDuration0=6
 stimDuration=1
 resx=1920
 speed=2.7
-C99= 0.55 #insert oherence level at 99% performance accuracy here
 dotsize=0.174 #dot size in degrees (calculated from 5pix dot size in aa's monitor with 1024px resolution and 30cm scrren width, assuming viewing distance 57cm)
 screenWidth=57.15 #screen width in cm
 
@@ -34,7 +36,7 @@ toFile('lastParams.pickle', params) #save params to file for next time
 
 fileName = params['Experimenter']+'_'+params['Subject']+'_adaptation'
 dataFile = open('../../psychopyData/Motion/'+fileName+'.csv', 'a')#a simple text file with 'comma-separated-values'
-dataFile.write('trial, blocktrial, adapt_direction, coherence, dot_direction, corresp, subjectResp, accuracy, RT\n') 
+dataFile.write('trial\tblocktrial\tadapt_direction\tcoherence\tdot_direction\tcorresp\tsubjectResp\taccuracy\tRT\n') 
 debug=0
 
 if platform.platform()[0:5] == 'Linux': # if we're on Linux, then we're probably using the viewpixx monitor
@@ -60,15 +62,15 @@ dot_stim = visual.DotStim(win, color=(1.0, 1.0, 1.0), dir=270,
     speed=dotSpeed/frameRate, coherence=0.9)
 fixation=visual.Circle(win, radius=0.1,  edges=60, units='deg', lineWidth=2, lineColor=[-1,-1,-1], fillColor=[-1,-1,-1], colorSpace='rgb', pos=(0, 0))
 blankFrame=visual.TextStim(win, text='', pos=(0, 0))
-instruction1=visual.TextStim(win, text="View the moving bars then look at the moving dots", pos=(0,5))
-instruction2=visual.TextStim(win, text="If the dots generally move UP, press Q. If they move DOWN, press M", wrapWidth=19.5, pos=(0, 2))
+instruction1=visual.TextStim(win, text="View the striped pattern and focus on the black square in front of them.", pos=(0,5))
+instruction2=visual.TextStim(win, text="After that, look at the moving dots. If the dots generally move UP, press Q. If they move DOWN, press M", wrapWidth=19.5, pos=(0, 2))
 instruction3 = visual.TextStim(win, text='Press the spacebar to continue', pos=(0,-3), height=0.6, wrapWidth=20, units='deg')
 adapt_gabor = visual.GratingStim(win, tex="sqr", mask="sqr", texRes=256, 
            size=[15.0, 10.0], sf=[1, 0], ori = 90, name='gabor1')
 fixationSqr= ShapeStim(win, vertices=((-0.25,-0.25),(-0.25,0.25),(0.25,0.25),(0.25,-0.25)), fillColor='black', pos=(0,0), lineColor=None)
 breakscreen1 = visual.TextStim(win, text='End of block. You may now take a break.', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
 breakscreen2 = visual.TextStim(win, text='Press the spacebar to continue', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
-endscreen1 = visual.TextStim(win, text='End of experiment', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
+endscreen1 = visual.TextStim(win, text='End of task.', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
 endscreen2 = visual.TextStim(win, text='Press space to exit', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
 kb = keyboard.Keyboard()
 
@@ -86,10 +88,11 @@ trial=0;
 for i in [0,1,2,3]:
     win.mouseVsible=False
     adapt_gabor = visual.GratingStim(win, tex="sqr", mask="sqr", texRes=256, 
-           size=[15.0, 10.0], sf=[1, 0], ori = blockTypes[i], name='gabor1')
+           size=[15.0, 10.0], sf=[1, 0], ori = 360 - blockTypes[i], #coded like this since direction of motion is the opposite of the gabor orientation, (if ori=90, direction=270)
+           name='gabor1')
     #trials.data.addDataType('adapt_direction')
 
-    if i in [2]:
+    if i in [1,2,3]:
         keys = kb.getKeys()
         while 'space' not in keys:
             breakscreen1.draw()
@@ -103,9 +106,9 @@ for i in [0,1,2,3]:
     # setup trial handler
     stimList=[]
     for direction in [90, 270]:
-        for coherence in [C99, C99/2, C99/4]: #coherence at 99% performance, half and quarter of that
+        for coherence in [C90, C90/2, C90/4]: #coherence at 99% performance, half and quarter of that
             stimList.append({'direction': direction, 'coherence': coherence})
-    trials = data.TrialHandler2(stimList, 8)
+    trials = data.TrialHandler2(stimList, nTrialsPerCondition)
     clockRT = core.Clock() 
     
     response=''
@@ -120,6 +123,9 @@ for i in [0,1,2,3]:
         blockTrial=blockTrial+1
         trial=trial+1
         
+        if trials.thisN==0:
+            adaptDuration=60
+        else: adaptDuration=adaptDuration0
         if trials.thisTrial.direction==90:
             corresp='q'
         else: corresp='m'
@@ -134,13 +140,10 @@ for i in [0,1,2,3]:
         for frameN in range(int(round(blank1*frameRate))):
             win.update()        
         #draw adaptor grating
-        for frameN in range(int(round(stimDuration*2*frameRate))):
+        for frameN in range(int(round(adaptDuration*frameRate))):
             adapt_gabor.phase += speed/frameRate
             adapt_gabor.draw()
             fixationSqr.draw()
-            win.update()
-        # show blank screen for 500 ms
-        for frameN in range(int(round(blank1*frameRate))):
             win.update()
         # show fixation point for 500 ms
         for frameN in range(int(round(fpDuration*frameRate))):

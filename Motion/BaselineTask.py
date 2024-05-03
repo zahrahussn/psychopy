@@ -10,8 +10,8 @@ from psychopy.hardware import keyboard
 import platform
 
 
-params = {'Subject':'test', 'Experimenter':'aa'}
-nTrialsPerCondition = 12
+params = {'Subject':'INSERTSUB', 'Experimenter':'aa'}
+nTrialsPerCondition = 10
 frameRate=120
 dotSpeed=8.25 #in degrees per second (calculated from 0.11 deg/frame speed from Winawer paper with 75Hz monitor)
 dotsize=0.174 #dot size in degrees (calculated from 5pix dot size in aa's monitor with 1024px resolution and 30cm screen width, assuming viewing distance 57cm)
@@ -56,12 +56,12 @@ dot_stim = visual.DotStim(win, color=(1.0, 1.0, 1.0), dir=270,
     speed=dotSpeed/frameRate, coherence=0.9)
 fixation=visual.Circle(win, radius=0.1,  edges=60, units='deg', lineWidth=2, lineColor=[-1,-1,-1], fillColor=[-1,-1,-1], colorSpace='rgb', pos=(0, 0)) 
 blankFrame=visual.TextStim(win, text='', pos=(0, 0))
-instruction1=visual.TextStim(win, text="you will be shown a field of dots moving in different directions.", wrapWidth=20, pos=(0,3))
-instruction2=visual.TextStim(win, text="If the general direction of the dots is UP, press Q. If the general direction is DOWN, press M", wrapWidth=25, pos=(0, 0))
+instruction1=visual.TextStim(win, text="You will be shown a circular field of dots moving in different directions.", wrapWidth=20, pos=(0,3))
+instruction2=visual.TextStim(win, text="If you can see that a portion of the dots are moving UP, press Q. If you can see them moving DOWN, press M", wrapWidth=25, pos=(0, 0))
 instruction3 = visual.TextStim(win, text='Press the spacebar to continue', pos=(0,-3), height=0.6, wrapWidth=20, units='deg')
 breakscreen1 = visual.TextStim(win, text='You are halfway through the task. You may now take a break.', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
 breakscreen2 = visual.TextStim(win, text='Press the spacebar when you wish to resume the task.', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
-endscreen1 = visual.TextStim(win, text='End of experiment', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
+endscreen1 = visual.TextStim(win, text='End of task', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
 endscreen2 = visual.TextStim(win, text='Press space to exit', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
 kb = keyboard.Keyboard()
 
@@ -101,14 +101,7 @@ for thisTrial in trials:
             
     dot_stim.dir=trials.thisTrial.direction
     dot_stim.coherence=trials.thisTrial.coherence
-#    dot_stim = visual.DotStim(win, units='deg', dir=trials.thisTrial.direction,#color=(1.0, 1.0, 1.0), 
-#    #nDots=100, fieldShape='circle', fieldPos=(0.0, 0.0), #fieldSize=10, dotSize=5, opacity=1, contrast=1, 
-#    #dotLife=5,  # number of frames for each dot to be drawn
-#    #signalDots='same',  # are signal dots 'same' on each frame? (see Scase et al)
-#    #noiseDots='direction',  # do the noise dots follow random- 'walk', 'direction', or 'position'
-#    #speed=dotSpeed, 
-#    coherence=trials.thisTrial.coherence)
-#        
+
     #instructions
     win.mouseVisible=False
     # show blank screen for 500 ms
@@ -123,13 +116,13 @@ for thisTrial in trials:
     kb.clock.reset()
 #show stimulus
     for frameN in range(int(round(stimDuration*frameRate))):
-        dot_stim.draw()
-        win.update()
+            dot_stim.draw()
+            win.update()
     #blank screen
     for frameN in range(int(round(blank2*frameRate))):
         win.update()
         
-    kb.clock.reset()
+    #kb.clock.reset()
     thisResponse = None
     while thisResponse == None:
         keys = kb.getKeys(keyList=['escape','q','m'])
