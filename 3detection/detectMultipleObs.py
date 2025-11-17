@@ -10,8 +10,8 @@ from scipy.ndimage import rotate
 from scipy.io import loadmat
 import matplotlib.pyplot as plt
 #myPath = '/Users/zhussain1/Dropbox/Research/Ongoing/uncertainty_chinaecherem/calibration_bitStealing'
-dataPath = '/Users/zhussain1/Dropbox/Research/Ongoing/uncertainty_chinaecherem/multObsData/'
-#dataPath = '../../psychopyData/detection2024/multObsData/sm/'
+# dataPath = '/Users/zhussain1/Dropbox/Research/Ongoing/uncertainty_chinaecherem/multObsData/'
+dataPath = '../../psychopyData/detection2024/multObsData/sm/'
 #os.chdir(myPath)
 import sys
 import platform
@@ -62,8 +62,8 @@ dataFile = open(dataPath+fileName + '.csv', 'a')
 dataFile.write('trial,uncertainty, observation, stimulus,stimID,stimNumber,contrast,noise,noiseSeed1, noiseSeed2, signalInterval, correct\n')
 
 if stimulus=="texture":
-    textures=loadmat('/Users/zhussain1/Dropbox/Research/Ongoing/uncertainty_chinaecherem/psychopy/theTextures.mat')
-    #textures=loadmat('/home/zahra/Documents/psychopy/3detection/theTextures.mat')
+    #textures=loadmat('/Users/zhussain1/Dropbox/Research/Ongoing/uncertainty_chinaecherem/psychopy/theTextures.mat')
+    textures=loadmat('/home/zahra/Documents/psychopy/3detection/theTextures.mat')
     image1=textures['theStimulus4']['stim1'][0][0]
     image2=textures['theStimulus4']['stim2'][0][0]
     image3=textures['theStimulus4']['stim3'][0][0]
