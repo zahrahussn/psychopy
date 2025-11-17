@@ -55,9 +55,9 @@ win.mouseVisible=False
 fixation = visual.PatchStim(win, color=-1, tex=None, mask='circle',size=(0.25,0.25))
 instruction1 = visual.TextStim(win, text=u'Judge whether the left image or right image looks more like the target in the middle', 
 pos=(0,4), height=0.6, wrapWidth=30, units='deg')
-instruction2 = visual.TextStim(win, text=u'Press 1 if the left image looks more like the target', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
-instruction3 = visual.TextStim(win, text=u'Press 0 if the right image looks more like the target', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
-instruction4 = visual.TextStim(win, text=u'Press the spacebar to begin', pos=(0,-2), height=0.6, wrapWidth=20, units='deg')
+instruction2 = visual.TextStim(win, text=u'Press 1 if the left image looks more like the target', pos=(0,2), height=0.8, wrapWidth=20, units='deg')
+instruction3 = visual.TextStim(win, text=u'Press 0 if the right image looks more like the target', pos=(0,0), height=0.8, wrapWidth=20, units='deg')
+instruction4 = visual.TextStim(win, text=u'Press the spacebar to begin', pos=(0,-2), height=0.8, wrapWidth=20, units='deg')
 breakscreen1 = visual.TextStim(win, text='End of block', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
 breakscreen2 = visual.TextStim(win, text='Press the spacebar to continue', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
 endscreen1 = visual.TextStim(win, text='End of experiment', pos=(0,2), height=0.6, wrapWidth=20, units='deg')

@@ -10,11 +10,12 @@ from psychopy.hardware import keyboard
 from psychopy import sound
 import platform
 
-params = {'Subject':'pilot3', 'Experimenter':'aa'}
-nTrialsPerCondition = 3
+params = {'Subject':'practice', 'Experimenter':'aa'}
+nTrialsPerCondition = 5
 frameRate=120
-dotSpeed=8.25 #in degrees per second (calculated from 0.11 deg/frame speed from Winawer paper with 75Hz monitor)
+dotSpeed=2.75 #in degrees per second (calculated from 0.11 deg/frame speed from Winawer paper with 75Hz monitor)
 dotsize=0.174 #dot size in degrees (calculated from 5pix dot size in aa's monitor with 1024px resolution and 30cm screen width, assuming viewing distance 57cm)
+dotlife=8
 blank1=0.5
 fpDuration=0.5
 blank2=0.1
@@ -51,17 +52,17 @@ win.mouseVisible=False
 dot_stim = visual.DotStim(win, color=(1.0, 1.0, 1.0), dir=270,
     nDots=100, fieldShape='circle', fieldPos=(0.0, 0.0), fieldSize=10, opacity=1,
     dotSize=dotsize*resx/screenWidth,
-    dotLife=5,  # number of frames for each dot to be drawn
+    dotLife=dotlife,  # number of frames for each dot to be drawn
     signalDots='same', noiseDots='direction',  
     speed=dotSpeed/frameRate, coherence=0.9)
 fixation=visual.Circle(win, radius=0.1,  edges=60, units='deg', lineWidth=2, lineColor=[-1,-1,-1], fillColor=[-1,-1,-1], colorSpace='rgb', pos=(0, 0)) 
 blankFrame=visual.TextStim(win, text='', pos=(0, 0))
-instruction1=visual.TextStim(win, text="you will be shown a field of dots moving in different directions.", wrapWidth=20, pos=(0,3))
+instruction1=visual.TextStim(win, text="You will be shown a circular field of dots moving in different directions.", wrapWidth=20, pos=(0,3))
 instruction2=visual.TextStim(win, text="If the general direction of the dots is UP, press Q. If the general direction is DOWN, press M", wrapWidth=25, pos=(0, 0))
 instruction3 = visual.TextStim(win, text='Press the spacebar to continue', pos=(0,-3), height=0.6, wrapWidth=20, units='deg')
 breakscreen1 = visual.TextStim(win, text='You are halfway through the task. You may now take a break.', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
 breakscreen2 = visual.TextStim(win, text='Press the spacebar when you wish to resume the task.', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
-endscreen1 = visual.TextStim(win, text='End of experiment', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
+endscreen1 = visual.TextStim(win, text='End of task', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
 endscreen2 = visual.TextStim(win, text='Press space to exit', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
 corSnd = sound.Sound(2200, octave=14, secs=0.05) #auditory feedback
 incorSnd = sound.Sound(800, octave=7, secs=0.05)
@@ -87,15 +88,12 @@ clockRT = core.Clock()
 
 
 for thisTrial in trials:
-    if trials.thisN==30:
-        keys = kb.getKeys()
-        while 'space' not in keys:
-            win.mouseVisible=False
-            breakscreen1.draw()
-            breakscreen2.draw()
-            win.flip()
-            #keyPress = event.waitKeys()
-            keys = kb.getKeys()
+#    if trials.thisN==0:
+#        dot_stim.coherence=1
+#    if trials.thisN==[3,4,5]:
+#        dot_stim.coherence=0.9
+#    if trials.thisN==[6,7,8]:
+#        dot_stim.coherence=0.7
     
     if trials.thisTrial.direction==90:
         corresp='q'

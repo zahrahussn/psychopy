@@ -9,17 +9,18 @@ import numpy as np
 from psychopy.hardware import keyboard
 import platform
 
-params = {'Subject':'INSERTSUB', 'Experimenter':'aa'}
-C90= 3 #insert coherence at 99% performance here
+params = {'Subject':'p014', 'day':'day2'}
+C90= 0.26 #insert coherence at 99% performance here
 nTrialsPerCondition=4
 frameRate=120
 resx=1920
 speed=2.7
 blank1=1
-dotSpeed=8.25 #in degrees per second (calculated from 0.11 deg/frame speed from Winawer paper with 75Hz monitor)
+dotSpeed=2.75 #in degrees per second (calculated from 0.11 deg/frame speed from Winawer paper with 75Hz monitor)
 dotsize=0.174 #dot size in degrees (calculated from 5pix dot size in aa's monitor with 1024px resolution and 30cm scrren width, assuming viewing distance 57cm)
+dotlife=8
 screenWidth=57.15 #screen width in cm
-fpDuration=0.5
+fpDuration=0.25
 blank2=0.1
 stimDuration=1
 cueDuration=1
@@ -33,9 +34,9 @@ random.shuffle(blockTypes)
 
 toFile('lastParams.pickle', params) #save params to file for next time
 
-fileName = params['Experimenter']+'_'+params['Subject']+'_imagery'
+fileName = params['Subject']+'_'+params['day']+'_imagery'
 dataFile = open('../../psychopyData/Motion/'+fileName+'.csv', 'a')#a simple text file with 'comma-separated-values'
-dataFile.write('trial\tblocktrial\timagery_direction\tcoherence\tdot_direction\tcorresp\tsubjectResp\taccuracy\tRT\n')
+dataFile.write('trial\tblocktrial\timagery_direction\tcoherence\tdot_direction\tcorresp\tsubjectResp\taccuracy\tRT\tdotLifeFrames\tdotSpeedDegFrame\ttrialsPerCondition\n')
 
 debug=0
 
@@ -60,7 +61,7 @@ arrowVert = [(0.5,0),(0,0.5),(-0.5,0),(-0.125,0),(-0.125,-0.5),(0.125,-0.5),(0.1
 arrow = ShapeStim(win, vertices=arrowVert, fillColor='white', lineWidth=2, lineColor='black', pos=(0,0))
 dot_stim = visual.DotStim(win, units='deg', color=(1.0, 1.0, 1.0), dir=270, opacity=1,
     nDots=100, fieldShape='circle', fieldPos=(0.0, 0.0), fieldSize=10,
-    dotLife=5,  # number of frames for each dot to be drawn
+    dotLife=dotlife,  # number of frames for each dot to be drawn
     signalDots='same', noiseDots='direction',  
     dotSize=dotsize*resx/screenWidth,
     speed=dotSpeed/frameRate, coherence=0.9)
@@ -70,14 +71,14 @@ clockRT = core.Clock()
 instruction1=visual.TextStim(win, text='You will be shown striped patterns moving up or down.', pos=(0,3))
 instruction2=visual.TextStim(win, text='Try to attend to the size, color, and speed of the stripes, so that later you can picture them clearly even when the screen is blank.', wrapWidth=25, pos=(0,-1))
 instruction3=visual.TextStim(win, text='On the next screen, you will see an arrow on an image of the striped pattern. Remember the direction the arrow is pointing in.', wrapWidth=35, pos=(0,7))
-instruction5=visual.TextStim(win, text='Once the arrow disappears, a flashing square will appear. Focus on it while imagining the moving stripes in the direction of the arro.w', wrapWidth=35, pos=(0,1))
-instruction6=visual.TextStim(win, text='After that, you will see moving dots. If the dots generally move UP, press Q. If they move DOWN, press M.', pos=(0,-3), wrapWidth=35, units='deg')
+instruction4=visual.TextStim(win, text='Once the arrow disappears, a flashing square will appear. Focus on it while imagining the moving stripes in the direction of the arro.w', wrapWidth=35, pos=(0,1))
+instruction5=visual.TextStim(win, text='After that, you will see moving dots. If the dots generally move UP, press Q. If they move DOWN, press M.', pos=(0,-3), wrapWidth=35, units='deg')
 breakscreen=visual.TextStim(win, text='Press the spacebar to continue', pos=(0,-7), wrapWidth=20, units='deg')
 breakscreen1=visual.TextStim(win, text='End of block. You may now take a break.', pos=(0,-0), wrapWidth=20, units='deg')
 endscreen1 = visual.TextStim(win, text='End of task', pos=(0,2), height=0.6, wrapWidth=20, units='deg')
 endscreen2 = visual.TextStim(win, text='Press space to exit', pos=(0,0), height=0.6, wrapWidth=20, units='deg')
 color = np.array([1, 1, 1])
-sqrVert = [(-0.25,-0.25),(-0.25,0.25),(0.25,0.25),(0.25,-0.25)]
+sqrVert = [(-0.125,-0.125),(-0.125,0.125),(0.125,0.125),(0.125,-0.125)]
 sqr = ShapeStim(win, vertices=sqrVert, fillColor=color, lineWidth=2, lineColor=None, pos=(0,0))
 kb = keyboard.Keyboard()
 
@@ -190,7 +191,6 @@ for i in [0,1,2,3]:
         instruction3.draw()
         instruction4.draw()
         instruction5.draw()
-        instruction6.draw()
         breakscreen.draw()
         win.mouseVisible=False
         win.update()
@@ -257,7 +257,7 @@ for i in [0,1,2,3]:
             win.mouseVisible=False
             for thisKey in keys:
                 if thisKey.name in ['escape']: 
-                    dataFile.write('%d%s\t\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' %(trial,blockTrial,blockTypes[i],trials.thisTrial.coherence,trials.thisTrial.direction,corresp,'NA','NA',round(thisKey.rt,2)))
+                    dataFile.write('%d%s\t\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' %(trial,blockTrial,blockTypes[i],trials.thisTrial.coherence,trials.thisTrial.direction,corresp,'NA','NA',round(thisKey.rt,2),dot_stim.dotLife,dot_stim.speed,nTrialsPerCondition))
                     core.quit()
                 elif thisKey.name==corresp:
                     thisResponse=1
@@ -274,7 +274,7 @@ for i in [0,1,2,3]:
         trials.addData('RT', thisKey.rt)
         trials.addData('accuracy', accuracy)
         event.clearEvents()
-        dataFile.write('%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' %(trial,blockTrial,blockTypes[i],trials.thisTrial.coherence,trials.thisTrial.direction,corresp,thisKey.name, accuracy,round(thisKey.rt,2)))
+        dataFile.write('%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' %(trial,blockTrial,blockTypes[i],trials.thisTrial.coherence,trials.thisTrial.direction,corresp,thisKey.name, accuracy,round(thisKey.rt,2),dot_stim.dotLife,dot_stim.speed,nTrialsPerCondition))
 
 keys = kb.getKeys()
 while 'space' not in keys:
