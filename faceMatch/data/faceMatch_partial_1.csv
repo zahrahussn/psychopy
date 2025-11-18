@@ -1,0 +1,20 @@
+trial,faceID,mask,response,accuracy,RT,stimDuration
+1,2,lower,face2,1,1.6,0.15 s
+2,5,none,face5,1,1.3,0.15 s
+3,1,lower,face3,0,3.4,0.15 s
+4,2,upper,face7,0,1.2,0.15 s
+5,3,none,face3,1,4.3,0.15 s
+6,10,none,face10,1,1.1,0.15 s
+7,10,upper,face10,1,1.12,0.15 s
+8,4,upper,face8,0,1.08,0.15 s
+9,8,upper,face8,1,3.12,0.15 s
+10,1,none,face9,0,1.5,0.15 s
+11,10,lower,face9,0,2.5,0.15 s
+12,7,lower,face7,1,1.13,0.15 s
+13,9,none,face9,1,2.1,0.15 s
+14,7,upper,face7,1,1.63,0.15 s
+15,8,lower,face2,0,2.92,0.15 s
+16,7,none,face3,0,1.12,0.15 s
+17,9,lower,face1,0,2.0,0.15 s
+18,9,upper,face4,0,3.26,0.15 s
+19,4,lower,face7,0,2.03,0.15 s

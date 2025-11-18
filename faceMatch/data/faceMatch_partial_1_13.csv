@@ -1,0 +1,13 @@
+trial,faceID,mask,response,accuracy,RT,stimDuration
+1,O54.jpeg,lower,O54.jpeg,1,6.683,0.15s
+2,O67.jpeg,none,O67.jpeg,1,1.784,0.15s
+3,O32.jpeg,lower,O71.jpeg,0,1.9,0.15s
+4,O76.jpeg,upper,O56.jpeg,0,1.485,0.15s
+5,O13.jpeg,upper,O13.jpeg,1,2.403,0.15s
+6,O51.jpeg,lower,O51.jpeg,1,1.952,0.15s
+7,O80.jpeg,lower,O80.jpeg,1,1.85,0.15s
+8,O81.jpeg,lower,O81.jpeg,1,1.283,0.15s
+9,O71.jpeg,lower,O71.jpeg,1,1.652,0.15s
+10,O27.jpeg,none,O27.jpeg,1,2.304,0.15s
+11,O44.jpeg,none,O3.jpeg,0,2.005,0.15s
+12,O80.jpeg,upper,O11.jpeg,0,1.869,0.15s
