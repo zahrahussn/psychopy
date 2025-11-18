@@ -45,7 +45,7 @@ with open(dataFileName+'.csv', 'a', newline='') as dataFile:
     writer = csv.writer(dataFile)
     writer.writerow(['trial', 'faceID', 'mask', 'response', 'accuracy', 'RT', 'stimDuration'])
 
-folder = Path('/Users/zhussain1/Documents/psychopy/faceMatch/Stimuli/largerSet')
+folder = Path('/home/zahra/Documents/psychopy/faceMatch/Stimuli/largerSet')
 image_files = [f.name for f in folder.glob('*.jpeg')]
 
 fixation = visual.GratingStim(win, color='black', tex=None, mask='circle', size=0.2)

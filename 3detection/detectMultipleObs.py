@@ -20,16 +20,16 @@ import sys
 
 debug=0# 1
 #stimContrast=0.000065 # 0.00005 # 0.00008
-stimContrast= 0.05
+stimContrast= 0.00009
 nObs=4
 title='Detection under uncertainty'
-subject = 'zh'
+subject = 'sm'
 #subject = 'gv_practice'
-stimulus = 'texture' # 'grating', 'texture'
+stimulus = 'grating' # 'grating', 'texture'
 uncertainty = 'sse' # 'sse', 'simple', 'composite'
-noiseType = 'fixed'  # 'fixed', 'variable'
-session_number = '1' # 1, 2
-stimID=1 # '1', '2', '3', '4', '5' only applies for the sse condition
+noiseType = 'variable'  # 'fixed', 'variable'
+session_number = '2' # 1, 2
+stimID=2# '1', '2', '3', '4', '5' only applies for the sse condition
 
 #  window 
 gamma=2.2

@@ -5,17 +5,22 @@
 from psychopy import visual, core, event, sound, data
 import numpy as np
 import os, time, datetime#, json
+import os, shutil
+import string, time
+import platform
+import csv
+from pathlib import Path
 
 # === Participant info ===
-name = 'zh1'
-while len(name) != 3:
-    name = input('Initials (3 letters): ')
-
+debug=1
+subject = 'zh'
+dataPath = '../../psychopyData/prediction/'
 # === File setup ===
 timestamp = datetime.datetime.now().strftime("%d_%m_%H%M")
-#folder = os.path.join(os.getcwd(), "counterphase_data", name)
-#os.makedirs(folder, exist_ok=True)
-#outfile = os.path.join(folder, f"{timestamp}.json")
+# data file
+fileName = subject+'_prediction'
+dataFile = open(dataPath+fileName + '.csv', 'a')
+dataFile.write('trial, phase, correct\n')
 
 # === Load sounds ===
 correct_sound = sound.Sound(1800, octave=14, stereo=True, secs=0.01)
@@ -36,10 +41,22 @@ nframes = round(1000 / TF)
 testsize=1
 adaptorsize=2
 phases = [0, 0.5]
-frameRate = 60.0
-phaseStep = TF / frameRate  # phase increment per frame
+#frameRate = 60.0
 
-win = visual.Window(size=[800, 600], units="deg", color=[0, 0, 0], fullscr=False, monitor='testMonitor')
+
+if platform.platform()[0:5] == 'Linux': # if we're on Linux, then we're probably using the viewpixx monitor
+    monitor = 'detectingMonitor'
+    frameRate=120
+    print('hello')
+else:
+    monitor = 'testMonitor'
+    frameRate=60
+if debug==1:
+    win = visual.Window([1600, 800], allowGUI=True, monitor=monitor, units='deg', checkTiming=False)
+else:
+    win = visual.Window(fullscr=True, allowGUI=True, monitor=monitor, units='deg', checkTiming=False)
+
+phaseStep = TF / frameRate  # phase increment per frame
 fixation = visual.ShapeStim(win, vertices=((0, -0.25), (0, 0.25), (0,0), (-0.25,0), (0.25,0)),
                             lineWidth=2, closeShape=False, lineColor='white')
 stim = visual.GratingStim(win, tex='sin', mask=None, size=(1, 1), units="deg", sf=1, ori=270, phase=0.5)
@@ -84,19 +101,33 @@ for stair in staircases:
             win.flip()
 
         # === Get response ===
-        event.clearEvents()
-        keys = event.waitKeys(keyList=['left', 'right', 'escape'])
-        if 'escape' in keys:
-            win.close()
-            core.quit()
+#        event.clearEvents()
+#        keys = event.waitKeys(keyList=['left', 'right', 'escape'])
+#        if 'escape' in keys:
+#            win.close()
+#            core.quit()
+#
+#        response = 1 if ((keys[0] == 'left' and side == 1) or (keys[0] == 'right' and side == 2)) else 0
+            thisResp = None
+            clockRT = core.Clock() 
+            while thisResp is None:
+                allKeys = kb.getKeys(keyList=['escape','left','right'])
+                for thisKey in allKeys:
+                    if thisKey == 'escape':core.quit()
+                    elif thisKey in ['left','right']:
+                        if thisKey == corresp:
+                            thisResp = 1  # correct 
+                            correctSound.play()
+                        else:
+                            thisResp = 0  
+                            incorrectSound.play()               
+                    kb.clearEvents('mouse')
+            stair.addResponse(response)
 
-        response = 1 if ((keys[0] == 'left' and side == 1) or (keys[0] == 'right' and side == 2)) else 0
-        stair.addResponse(response)
-
-        if response == 1:
-            correct_sound.play()
-        else:
-            incorrect_sound.play()
+#        if response == 1:
+#            correct_sound.play()
+#        else:
+#            incorrect_sound.play()
 
         core.wait(0.5)
 
