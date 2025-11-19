@@ -2,16 +2,23 @@ from __future__ import absolute_import, division, print_function
 from psychopy import visual, event, core, gui, data, sound
 from psychopy.tools.filetools import fromFile, toFile
 from psychopy.hardware import keyboard
-from random import shuffle, random #added this to track clicks
+from random import shuffle, random 
 import random, copy, scipy, numpy
 import os, shutil
 import string, time
 import platform
 import csv
 from pathlib import Path
+import datetime
+dataPath = '/Users/zhussain1/Documents/psychopyData/faceMatch/'
 
 debug=1
-idNumber = 1
+subject = 'zh'
+timestamp = datetime.datetime.now().strftime("%d_%m_%H%M")
+dataFileName = subject+'_faceMatch'+'_'+timestamp
+dataFile = open(dataPath+dataFileName + '.csv', 'a')
+dataFile.write('trial, faceID, mask, response, accuracy, RT, stimDuration\n')
+dataFile.flush()   # forces it to disk
 
 if platform.platform()[0:5] == 'Linux': # if we're on Linux, then we're probably using the viewpixx monitor
     monitor = 'viewPixx'
@@ -24,28 +31,15 @@ if debug==1:
     win = visual.Window([1600, 800], allowGUI=True, monitor=monitor, units='deg', checkTiming=False)
 else:
     win = visual.Window(fullscr=True, allowGUI=True, monitor=monitor, units='deg', checkTiming=False)
-   
+
+faceSize=5
 feedback=1
 fpduration=2
 stimulusduration=0.15
 blankduration=1
 trialsPerCondition = 3
 
-os.makedirs('data', exist_ok=True)
-dataFileName = f'data/faceMatch_partial_{idNumber}'
-if os.path.exists(dataFileName+'.csv'): # if datafile already exist, append a number
-    ii=2
-    while True:
-        new_name = dataFileName + "_" + str(ii)
-        if not os.path.exists(new_name+'.csv'):
-            dataFileName = new_name
-            break 
-        ii += 1
-with open(dataFileName+'.csv', 'a', newline='') as dataFile:
-    writer = csv.writer(dataFile)
-    writer.writerow(['trial', 'faceID', 'mask', 'response', 'accuracy', 'RT', 'stimDuration'])
-
-folder = Path('/home/zahra/Documents/psychopy/faceMatch/Stimuli/largerSet')
+folder = Path('../../psychopy/faceMatch/Stimuli/largerSet')
 image_files = [f.name for f in folder.glob('*.jpeg')]
 
 fixation = visual.GratingStim(win, color='black', tex=None, mask='circle', size=0.2)
@@ -57,8 +51,8 @@ corSnd = sound.Sound(1800, octave=14, stereo=True, secs=0.05)
 incorSnd = sound.Sound(700, octave=7, stereo=True, secs=0.05)
 
 # Make face and noise stimuli
-faceWidth=4.2
-faceHeight=4.2
+faceWidth=faceSize
+faceHeight=faceSize
 faceSize=(faceWidth,faceHeight)
 facePos=(0,0)
 faceStimulus= visual.ImageStim(win,size=faceSize) # create face stimulus without specifying the image or position
@@ -107,6 +101,8 @@ trials = data.TrialHandler(stimList, nReps=1, method='random')
 
 # ------------------- TRIAL LOOP -------------------
 trialNum = 0
+kb = keyboard.Keyboard()
+kb.clearEvents()
 for thisTrial in trials:
     trialNum += 1
     myMouse.setPos((0, 0))
@@ -151,6 +147,9 @@ for thisTrial in trials:
     for _ in range(int(round(blankduration * frameRate))):
         win.flip()
 
+#    keys = kb.waitKeys(keyList=['escape', 'left', 'right'])
+#    if 'escape' in keys:
+#        core.quit()
     # --- response phase ---
     myMouse.setVisible(True)
     clickedFace = None
@@ -200,17 +199,8 @@ for thisTrial in trials:
                         win.flip()
 
                     # save data
-                    with open(dataFileName + '.csv', 'a', newline='') as f:
-                        writer = csv.writer(f)
-                        writer.writerow([
-                            trialNum,
-                            target_image,
-                            thisTrial['mask'],
-                            all_faces[i],
-                            accuracy,
-                            round(rt, 3),
-                            f"{stimulusduration}s"
-                        ])
-                    break
+                    dataFile.write(f"{trialNum}, {target_image},{thisTrial['mask']},{all_faces[i]},{accuracy},{round(rt,3)},{stimulusduration}\n")
+                    dataFile.flush()   # forces it to disk
+
 win.close()
 core.quit()

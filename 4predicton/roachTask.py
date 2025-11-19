@@ -22,7 +22,7 @@ trialFileName = subject+'_prediction_trials'+'_'+timestamp
 thresholdFileName = subject+'_prediction_thresholds'+'_'+timestamp
 trialFile = open(dataPath+trialFileName + '.csv', 'a')
 thresholdFile=open(dataPath+thresholdFileName + '.csv', 'a')
-trialFile.write( 'trial, inducerLocation, phase, motion, edge, stimPos, log_contrast, contrast, correct\n')
+trialFile.write('trial, inducerLocation, phase, motion, edge, stimPos, log_contrast, contrast, correct\n')
 
 # === Load sounds ===
 correct_sound = sound.Sound(1800, octave=14, stereo=True, secs=0.01)
@@ -53,7 +53,7 @@ TF = 5           # temporal frequency (Hz)
 stimSize=1
 inducerx = 2
 inducery = 2
-n_trials = 5  # total trials per block
+n_trials = 10  # total trials per block
 phaseStep = TF / frameRate  # phase increment per frame
 nframes = round(1 * frameRate)
 blankframes = round(0.20 * frameRate)
@@ -78,8 +78,10 @@ motion = ['up', 'down']
 
 # === Data storage ===
 trial_data = []
+msg = visual.TextStim(win, text='Press the space bar to begin')
 
-fixation.draw()
+msg.draw()
+#fixation.draw()
 win.flip()
 # Wait for a keypress
 kb = keyboard.Keyboard()
@@ -104,7 +106,6 @@ trialNumber=0
 for location in locations:
     for phase in phases:
         block_num += 1
-        trialNumber +=1
         print(f"\n=== Block start: Location={location}, Phase={phase} ===")
   # === Balanced motion order ===
         motions_block = (['up'] * (n_trials // 2)) + (['down'] * (n_trials // 2))
@@ -125,6 +126,7 @@ for location in locations:
             
         # trials within block
         for motion, increment_logcontrast in zip(motions_block, stair):
+            trialNumber +=1
             inducer1.phase = 0
             inducer2.phase = 0
             dir_sign = 1 if motion == 'up' else -1
@@ -163,58 +165,36 @@ for location in locations:
                 win.flip()   
         
             # === Get response ===
-#            TF_actual=phaseStep*actual_frame_rate
-#            print(f"Actual frame rate: {actual_frame_rate:.2f} Hz")
-#            print(f"Measured temporal frequency: {TF_actual:.2f} Hz")
-            
-#            event.clearEvents()
-#            keys = event.waitKeys(keyList=['left', 'right', 'escape'])
-#            if 'escape' in keys:
-#                win.close()
-#                core.quit()
             thisResp = None
             clockRT = core.Clock() 
-            while thisResp is None:
-                allKeys = kb.getKeys(keyList=['escape','left','right'])
-                for thisKey in allKeys:
-                    if thisKey == 'escape':core.quit()
-#                    elif thisKey in ['left','right']:
-#                        if thisKey == corresp:
-#                            thisResp = 1  # correct
-#                            correctSound.play()  
-#                        else:
-#                            thisResp = 0  
-#                            incorrectSound.play()
-                correct = int(
-                    (keys[0] == 'left' and side == 1) or (keys[0] == 'right' and side == 2)
-                )
-                stair.addResponse(correct)
+            keys = kb.waitKeys(keyList=['escape', 'left', 'right'])
+
+            if 'escape' in keys:
+                core.quit()
+
+            resp_key = keys[0].name
+
+            correct = int(
+                (resp_key == 'left' and side == 1) or 
+                (resp_key == 'right' and side == 2))
+            stair.addResponse(correct)
             
             (correct_sound if correct else incorrect_sound).play()
             core.wait(0.3)
                 
              # Save trial data
+            trial_data.append({
+            'trial': trialNumber,
+            'location': location,
+            'phase': phase,
+            'motion': motion,
+            'edge': edge,
+            'stimSide': stimSide,
+            'log_contrast': increment_logcontrast,
+            'contrast': contrast,
+            'correct': correct
+            }) 
             trialFile.write(f"{trialNumber}, {location},{phase},{motion},{edge},{stimSide},{increment_logcontrast}, {contrast},{correct}\n")
-#            trial_data.append({
-#                'participant': name,
-#                'location': location,
-#                'phase': phase,
-#                'motion': motion,
-#                'edge': edge,
-#                'stimPos': stimSide,
-#                'log_contrast': increment_logcontrast,
-#                'stim_contrast': contrast,
-#                'correct': correct
-#            })
-            
-#            with open(triaFile, 'a', newline='') as f:
-#                writer = csv.writer(f)
-#                writer.writerow([
-#                location, phase, motion, edge, stimSide, 
-#                log_contrast,   
-#                contrast,                        
-#                correct
-#                ])
   
   # === Block break ===
         if block_num < total_blocks:
@@ -228,40 +208,29 @@ for location in locations:
         event.waitKeys(keyList=['space'])
         
 # === Compute thresholds by edge type ===
-#df = pd.DataFrame(trial_data)
-#thresholds = []
-#
-#for location in df['location'].unique():
-#    for phase in df['phase'].unique():
-#        for edge_type in ['leading', 'trailing']:
-#            subset = df[(df['location'] == location) &
-#                        (df['phase'] == phase) &
-#                        (df['edge'] == edge_type)]
-#            if len(subset) > 0:
-#                log_thr = round(np.mean(subset['log_contrast'].tail(8)),3)
-#                lin_thr = round((10 ** log_thr) / 100, 4)
-#                thresholds.append({
-#                    'participant': name,
-#                    'location': location,
-#                    'phase': phase,
-#                    'edge': edge_type,
-#                    'threshold_log': log_thr,
-#                    'threshold_contrast': lin_thr
-#                })
-#
-# Save files
-#df.to_csv(trialfile, index=False)
-#pd.DataFrame(thresholds).to_csv(thresholdFile, index=False)
-#
-# === Print summary ===
-#print("\n=== Thresholds by condition ===")
-#for t in thresholds:
-#    print(f"{t['location']}, phase={t['phase']}, {t['edge']}: "
-#          f"log={t['threshold_log']:.2f}, "
-#          f"contrast={t['threshold_contrast']*100:.2f}%")
-#
-#t_end = trial_clock.getTime()
-#print(f"\nExperiment complete. Duration: {(t_end - t_start)/60:.2f} min")
+df = pd.DataFrame(trial_data)
+thresholds = []
+
+for location in df['location'].unique():
+    for phase in df['phase'].unique():
+        for edge_type in ['leading', 'trailing']:
+            subset = df[(df['location'] == location) &
+                        (df['phase'] == phase) &
+                        (df['edge'] == edge_type)]
+            if len(subset) > 0:
+                log_thr = round(np.mean(subset['log_contrast'].tail(8)),3)
+                lin_thr = round((10 ** log_thr) / 100, 4)
+                thresholdFile.write(f"{location},{phase},{edge_type},{log_thr}, {lin_thr}\n")
+
+ #=== Print summary ===
+print("\n=== Thresholds by condition ===")
+for t in thresholds:
+    print(f"{t['location']}, phase={t['phase']}, {t['edge']}: "
+          f"log={t['threshold_log']:.2f}, "
+          f"contrast={t['threshold_contrast']*100:.2f}%")
+
+t_end = trial_clock.getTime()
+print(f"\nExperiment complete. Duration: {(t_end - t_start)/60:.2f} min")
 
 win.close()
 core.quit()
