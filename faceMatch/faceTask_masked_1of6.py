@@ -10,18 +10,19 @@ import platform
 import csv
 from pathlib import Path
 import datetime
-dataPath = '/Users/zhussain1/Documents/psychopyData/faceMatch/'
+#dataPath = '/Users/zhussain1/Documents/psychopyData/faceMatch/'
+dataPath = '../../psychopyData/faceMatch/'
 
-debug=1
-subject = 'zh'
+subject = 'ER'
 timestamp = datetime.datetime.now().strftime("%d_%m_%H%M")
 dataFileName = subject+'_faceMatch'+'_'+timestamp
 dataFile = open(dataPath+dataFileName + '.csv', 'a')
 dataFile.write('trial, faceID, mask, response, accuracy, RT, stimDuration\n')
 dataFile.flush()   # forces it to disk
 
+debug=0
 if platform.platform()[0:5] == 'Linux': # if we're on Linux, then we're probably using the viewpixx monitor
-    monitor = 'viewPixx'
+    monitor = 'detectingMonitor'
     frameRate=120
     print('hello')
 else:
@@ -47,8 +48,8 @@ frameFeedback = visual.ShapeStim(win, color='green',lineWidth=1.5, vertices=((0,
 myMouse = event.Mouse(win=win)
 
 #Feedback sounds 
-corSnd = sound.Sound(1800, octave=14, stereo=True, secs=0.05)
-incorSnd = sound.Sound(700, octave=7, stereo=True, secs=0.05)
+corSnd = sound.Sound(1200, octave=14, stereo=True, secs=0.05)
+incorSnd = sound.Sound(400, octave=7, stereo=True, secs=0.05)
 
 # Make face and noise stimuli
 faceWidth=faceSize
@@ -107,6 +108,7 @@ for thisTrial in trials:
     trialNum += 1
     myMouse.setPos((0, 0))
     myMouse.clickReset()
+    myMouse.setVisible(False)
 
     # --- target and distractors ---
     available_faces = image_files.copy()
