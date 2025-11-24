@@ -211,7 +211,12 @@ for location, phase in blocks:
                           color='black', height=0.5)
     msg.draw()
     win.flip()
-    event.waitKeys(keyList=['space'])
+    kb = keyboard.Keyboard()
+    kb.clearEvents()
+    keys = []
+    while not keys:
+        keys = kb.getKeys()
+
     core.wait(1)
     
 # === Compute thresholds by edge type ===
