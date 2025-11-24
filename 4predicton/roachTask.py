@@ -10,7 +10,7 @@ from psychopy.hardware import keyboard
 import sys
 dataPath = '../../psychopyData/prediction/'
 
-debug=1
+debug=0
 # === Participant info ===
 subject= 'zh1'
 while len(subject) != 3:
@@ -37,7 +37,7 @@ if platform.platform()[0:5] == 'Linux': # if we're on Linux, then we're probably
     xlib.XInitThreads()
 else:
     monitor = 'testMonitor'
-    frameRate=60
+    frameRate=120
 if debug==1:
     win = visual.Window([1600, 1000], allowGUI=True, monitor=monitor, units='deg', checkTiming=False)
 else:
@@ -100,113 +100,119 @@ win.mouseVisible = False
 kb = keyboard.Keyboard()
 kb.clearEvents()
 
+blocks = [(loc, ph) for loc in locations for ph in phases]
+random.shuffle(blocks)  # shuffle the block order
 block_num = 0
 total_blocks = len(locations) * len(phases)  # 4
 trialNumber=0
-for location in locations:
-    for phase in phases:
-        block_num += 1
-        print(f"\n=== Block start: Location={location}, Phase={phase} ===")
-  # === Balanced motion order ===
-        motions_block = (['up'] * (n_trials // 2)) + (['down'] * (n_trials // 2))
-        random.shuffle(motions_block)
+#for location in locations:
+#    for phase in phases:
+for location, phase in blocks:
+    block_num += 1
+    print(f"\n=== Block start: Location={location}, Phase={phase} ===")
+# === Balanced motion order ===
+    motions_block = (['up'] * (n_trials // 2)) + (['down'] * (n_trials // 2))
+    random.shuffle(motions_block)
+    
+                             
+    stair = data.StairHandler(startVal=0.8, stepType='lin',
+                              stepSizes=[0.4, 0.2, 0.1, 0.05], minVal=-2, maxVal=2,
+                              nUp=1, nDown=3, 
+                              nReversals=4, nTrials=n_trials)                         
+    stair.extraInfo = {'location': location, 'phase': phase}
+    
+    # set inducer position
+    if location=='top':
+        inducer1.pos=(-inducerx, inducer_y_pos_top)
+        inducer2.pos=(inducerx, inducer_y_pos_top)
+    else:
+        inducer1.pos=(-inducerx, inducer_y_pos_bottom)
+        inducer2.pos=(inducerx, inducer_y_pos_bottom)
         
-        stair = data.StairHandler(startVal=0.8, stepType='lin',
-                                  stepSizes=[0.4], minVal=-2, maxVal=2,
-                                  nReversals=8, nTrials=n_trials)
-        stair.extraInfo = {'location': location, 'phase': phase}
-        
-        # set inducer position
-        if location=='top':
-            inducer1.pos=(-inducerx, inducer_y_pos_top)
-            inducer2.pos=(inducerx, inducer_y_pos_top)
+    # trials within block
+    for motion, increment_logcontrast in zip(motions_block, stair):
+        trialNumber +=1
+        inducer1.phase = 0
+        inducer2.phase = 0
+        dir_sign = 1 if motion == 'up' else -1
+        contrast = (10 ** increment_logcontrast) / 100
+        stim.contrast = contrast
+        log_contrast = round(increment_logcontrast, 2) # for data file
+        contrast = round(contrast, 4) # for data file
+        offset_deg = (stim.pos[1] - inducer1.pos[1])  # vertical distance from inducer center to stim center
+        if stair.extraInfo['phase'] == 0:
+            stim.phase = (-offset_deg / 1) % 1.0
+        else:  # counterphase
+            stim.phase = (0.5 - offset_deg / 1) % 1.0
+       # stim.phase = stair.extraInfo['phase']
+        side = np.random.choice([1, 2])
+        stimSide =  ('left' if side == 1 else 'right')
+        if (location == 'top' and motion == 'down') or (location == 'bottom' and motion == 'up'):
+            edge = 'leading'
         else:
-            inducer1.pos=(-inducerx, inducer_y_pos_bottom)
-            inducer2.pos=(inducerx, inducer_y_pos_bottom)
-            
-        # trials within block
-        for motion, increment_logcontrast in zip(motions_block, stair):
-            trialNumber +=1
-            inducer1.phase = 0
-            inducer2.phase = 0
-            dir_sign = 1 if motion == 'up' else -1
-            contrast = (10 ** increment_logcontrast) / 100
-            stim.contrast = contrast
-            log_contrast = round(increment_logcontrast, 2) # for data file
-            contrast = round(contrast, 4) # for data file
-            offset_deg = (stim.pos[1] - inducer1.pos[1])  # vertical distance from inducer center to stim center
-            if stair.extraInfo['phase'] == 0:
-                stim.phase = (-offset_deg / 1) % 1.0
-            else:  # counterphase
-                stim.phase = (0.5 - offset_deg / 1) % 1.0
-           # stim.phase = stair.extraInfo['phase']
-            side = np.random.choice([1, 2])
-            stimSide =  ('left' if side == 1 else 'right')
-            if (location == 'top' and motion == 'down') or (location == 'bottom' and motion == 'up'):
-                edge = 'leading'
-            else:
-                edge = 'trailing'
-            
-            frame_times = []
-            for frame in range(nframes):
-                inducer1.phase += dir_sign * phaseStep
-                inducer2.phase += dir_sign * phaseStep
-                stim.phase += dir_sign * phaseStep
-                stim.pos = (-inducerx if side == 1 else inducerx, 0)
-                
-                stim.draw()
-                inducer1.draw()
-                inducer2.draw()
-                fixation.draw()
-                win.flip()
-                
-            for frame in range(blankframes):
-                fixation.draw()
-                win.flip()   
+            edge = 'trailing'
         
-            # === Get response ===
-            thisResp = None
-            clockRT = core.Clock() 
-            keys = kb.waitKeys(keyList=['escape', 'left', 'right'])
-
-            if 'escape' in keys:
-                core.quit()
-
-            resp_key = keys[0].name
-
-            correct = int(
-                (resp_key == 'left' and side == 1) or 
-                (resp_key == 'right' and side == 2))
-            stair.addResponse(correct)
+        frame_times = []
+        for frame in range(nframes):
+            inducer1.phase += dir_sign * phaseStep
+            inducer2.phase += dir_sign * phaseStep
+            stim.phase += dir_sign * phaseStep
+            stim.pos = (-inducerx if side == 1 else inducerx, 0)
             
-            (correct_sound if correct else incorrect_sound).play()
-            core.wait(0.3)
-                
-             # Save trial data
-            trial_data.append({
-            'trial': trialNumber,
-            'location': location,
-            'phase': phase,
-            'motion': motion,
-            'edge': edge,
-            'stimSide': stimSide,
-            'log_contrast': increment_logcontrast,
-            'contrast': contrast,
-            'correct': correct
-            }) 
-            trialFile.write(f"{trialNumber}, {location},{phase},{motion},{edge},{stimSide},{increment_logcontrast}, {contrast},{correct}\n")
+            stim.draw()
+            inducer1.draw()
+            inducer2.draw()
+            fixation.draw()
+            win.flip()
+            
+        for frame in range(blankframes):
+            fixation.draw()
+            win.flip()   
+    
+        # === Get response ===
+        thisResp = None
+        clockRT = core.Clock() 
+        keys = kb.waitKeys(keyList=['escape', 'left', 'right'])
+
+        if 'escape' in keys:
+            core.quit()
+
+        resp_key = keys[0].name
+
+        correct = int(
+            (resp_key == 'left' and side == 1) or 
+            (resp_key == 'right' and side == 2))
+        stair.addResponse(correct)
+        
+        (correct_sound if correct else incorrect_sound).play()
+        core.wait(0.3)
+            
+         # Save trial data
+        trial_data.append({
+        'trial': trialNumber,
+        'location': location,
+        'phase': phase,
+        'motion': motion,
+        'edge': edge,
+        'stimSide': stimSide,
+        'log_contrast': increment_logcontrast,
+        'contrast': contrast,
+        'correct': correct
+        }) 
+        trialFile.write(f"{trialNumber}, {location},{phase},{motion},{edge},{stimSide},{increment_logcontrast}, {contrast},{correct}\n")
   
-  # === Block break ===
-        if block_num < total_blocks:
-            msg_text = f"Block {block_num} complete.\nTake a short break.\nPress SPACE to continue."
-        else:
-            msg_text = "All done! Thank you.\nPress SPACE to exit."
-        msg = visual.TextStim(win, text=msg_text,
-                              color='black', height=0.5)
-        msg.draw()
-        win.flip()
-        event.waitKeys(keyList=['space'])
-        
+# === Block break ===
+    if block_num < total_blocks:
+        msg_text = f"Block {block_num} complete.\nTake a short break.\nPress SPACE to continue."
+    else:
+        msg_text = "All done! Thank you.\nPress SPACE to exit."
+    msg = visual.TextStim(win, text=msg_text,
+                          color='black', height=0.5)
+    msg.draw()
+    win.flip()
+    event.waitKeys(keyList=['space'])
+    core.wait(1)
+    
 # === Compute thresholds by edge type ===
 df = pd.DataFrame(trial_data)
 thresholds = []
