@@ -9,12 +9,11 @@ import platform
 from psychopy.hardware import keyboard
 import sys
 dataPath = '../../psychopyData/prediction/'
-
 debug=0
+
 # === Participant info ===
 subject= 'zh1'
-while len(subject) != 3:
-    subject = input('Initials (3 letters): ')
+
 
 # === File setup ===
 timestamp = datetime.datetime.now().strftime("%d_%m_%H%M")
@@ -25,8 +24,8 @@ thresholdFile=open(dataPath+thresholdFileName + '.csv', 'a')
 trialFile.write('trial, inducerLocation, phase, motion, edge, stimPos, log_contrast, contrast, correct\n')
 
 # === Load sounds ===
-correct_sound = sound.Sound(1800, octave=14, stereo=True, secs=0.01)
-incorrect_sound = sound.Sound(700, octave=7, stereo=True, secs=0.01)
+correct_sound = sound.Sound(1200, octave=14, stereo=True, secs=0.05)
+incorrect_sound = sound.Sound(400, octave=7, stereo=True, secs=0.05)
 
 # === Experiment parameters ===
 if platform.platform()[0:5] == 'Linux': # if we're on Linux, then we're probably using the viewpixx monitor
@@ -53,10 +52,10 @@ TF = 5           # temporal frequency (Hz)
 stimSize=1
 inducerx = 2
 inducery = 2
-n_trials = 10  # total trials per block
+n_trials = 80  # total trials per block
 phaseStep = TF / frameRate  # phase increment per frame
 nframes = round(1 * frameRate)
-blankframes = round(0.20 * frameRate)
+blankframes = round(0.10 * frameRate)
 
 fixation = visual.ShapeStim(win, vertices=((0, -0.15), (0, 0.15), (0,0), (-0.15,0), (0.15,0)),
                             lineWidth=2, closeShape=False, lineColor='black')
@@ -78,9 +77,11 @@ motion = ['up', 'down']
 
 # === Data storage ===
 trial_data = []
-msg = visual.TextStim(win, text='Press the space bar to begin')
+msg1 = visual.TextStim(win, text='Press left  or right to report target location.', pos=[0, 3], wrapWidth=200)
+msg2 = visual.TextStim(win, text='Press the space bar to begin', pos=[0, 0])
 
-msg.draw()
+msg1.draw()
+msg2.draw()
 #fixation.draw()
 win.flip()
 # Wait for a keypress
