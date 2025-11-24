@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 #myPath = '/Users/zhussain1/Dropbox/Research/Ongoing/uncertainty_chinaecherem/calibration_bitStealing'
 # dataPath = '/Users/zhussain1/Dropbox/Research/Ongoing/uncertainty_chinaecherem/multObsData/'
 dataPath = '../../psychopyData/detection2024/multObsData/sm/'
-#os.chdir(myPath)
+#os.chdir(myPath)10
 import sys
 import platform
 from psychopy.hardware import keyboard
@@ -26,9 +26,9 @@ title='Detection under uncertainty'
 subject = 'sm'
 #subject = 'gv_practice'
 stimulus = 'grating' # 'grating', 'texture'
-uncertainty = 'sse' # 'sse', 'simple', 'composite'
+uncertainty = 'composite' # 'sse', 'simple', 'composite'
 noiseType = 'variable'  # 'fixed', 'variable'
-session_number = '2' # 1, 2
+session_number = '5' # 1, 2
 stimID=2# '1', '2', '3', '4', '5' only applies for the sse condition
 
 #  window 
