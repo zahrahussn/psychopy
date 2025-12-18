@@ -10,7 +10,8 @@ import platform
 import csv
 from pathlib import Path
 import datetime
-dataPath = '/Users/zhussain1/Documents/psychopyData/faceMatch/'
+#dataPath = '/Users/zhussain1/Documents/psychopyData/faceMatch/''
+dataPath='../../psychopyData/faceMatch/'
 
 debug=1
 subject = 'zh'
@@ -21,7 +22,7 @@ dataFile.write('trial, faceID, mask, response, accuracy, RT, stimDuration\n')
 dataFile.flush()   # forces it to disk
 
 if platform.platform()[0:5] == 'Linux': # if we're on Linux, then we're probably using the viewpixx monitor
-    monitor = 'viewPixx'
+    monitor = 'detectingMonitor'
     frameRate=120
     print('hello')
 else:
@@ -37,7 +38,7 @@ feedback=1
 fpduration=2
 stimulusduration=0.15
 blankduration=1
-trialsPerCondition = 3
+trialsPerCondition = 2
 
 folder = Path('../../psychopy/faceMatch/Stimuli/largerSet')
 image_files = [f.name for f in folder.glob('*.jpeg')]
@@ -107,6 +108,7 @@ for thisTrial in trials:
     trialNum += 1
     myMouse.setPos((0, 0))
     myMouse.clickReset()
+    myMouse.setVisible(False)
 
     # --- target and distractors ---
     available_faces = image_files.copy()
