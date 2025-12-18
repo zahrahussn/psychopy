@@ -13,6 +13,9 @@ import datetime
 #dataPath = '/Users/zhussain1/Documents/psychopyData/faceMatch/''
 dataPath='../../psychopyData/faceMatch/'
 
+# to quit the experiment at any point by pressing escape
+event.globalKeys.add(key='escape', func=core.quit)
+
 debug=1
 subject = 'zh'
 timestamp = datetime.datetime.now().strftime("%d_%m_%H%M")

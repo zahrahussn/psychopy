@@ -11,9 +11,11 @@ import sys
 dataPath = '../../psychopyData/prediction/'
 debug=0
 
+# to quit the experiment at any point by pressing escape
+event.globalKeys.add(key='escape', func=core.quit)
+
 # === Participant info ===
 subject= 'zh1'
-
 
 # === File setup ===
 timestamp = datetime.datetime.now().strftime("%d_%m_%H%M")
