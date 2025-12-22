@@ -17,7 +17,7 @@ dataPath='../../psychopyData/faceMatch/'
 event.globalKeys.add(key='escape', func=core.quit)
 
 debug=1
-subject = 'zh'
+subject = 'tmp'
 timestamp = datetime.datetime.now().strftime("%d_%m_%H%M")
 dataFileName = subject+'_faceMatch'+'_'+timestamp
 dataFile = open(dataPath+dataFileName + '.csv', 'a')
@@ -49,6 +49,7 @@ image_files = [f.name for f in folder.glob('*.jpeg')]
 fixation = visual.GratingStim(win, color='black', tex=None, mask='circle', size=0.2)
 frameFeedback = visual.ShapeStim(win, color='green',lineWidth=1.5, vertices=((0, 0), (0, 0), (0, 0)))
 myMouse = event.Mouse(win=win)
+myMouse.setVisible(False)
 
 #Feedback sounds 
 corSnd = sound.Sound(1800, octave=14, stereo=True, secs=0.05)
@@ -109,9 +110,6 @@ kb = keyboard.Keyboard()
 kb.clearEvents()
 for thisTrial in trials:
     trialNum += 1
-    myMouse.setPos((0, 0))
-    myMouse.clickReset()
-    myMouse.setVisible(False)
 
     # --- target and distractors ---
     available_faces = image_files.copy()
@@ -156,6 +154,8 @@ for thisTrial in trials:
 #    if 'escape' in keys:
 #        core.quit()
     # --- response phase ---
+    myMouse.clickReset()
+    myMouse.setPos((0, 0))
     myMouse.setVisible(True)
     clickedFace = None
     rt_clock = core.Clock()
@@ -164,12 +164,11 @@ for thisTrial in trials:
             stim.draw()
         fixation.draw()
         win.flip()
-
+        
         if myMouse.getPressed()[0]:
-            clickPos = myMouse.getPos()
-            myMouse.setVisible(False)
             rt = rt_clock.getTime()
-
+            clickPos = myMouse.getPos()
+            
             for i, stim in enumerate(faceStimuliList):
                 x, y = stim.pos
                 half_w, half_h = stim.size[0] / 2, stim.size[1] / 2
@@ -195,14 +194,15 @@ for thisTrial in trials:
                         fillColor=None,
                         closeShape=True
                     )
-
+                    
+                    myMouse.setVisible(False) # Not sure why, but hiding the mouse has to happen just before drawing the feedback, otherwise it remains visible
                     for _ in range(int(frameRate * feedback)):
                         for stim2 in faceStimuliList:
                             stim2.draw()
                         fixation.draw()
                         frameFeedback.draw()
                         win.flip()
-
+                    
                     # save data
                     dataFile.write(f"{trialNum}, {target_image},{thisTrial['mask']},{all_faces[i]},{accuracy},{round(rt,3)},{stimulusduration}\n")
                     dataFile.flush()   # forces it to disk
