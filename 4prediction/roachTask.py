@@ -11,9 +11,11 @@ import sys
 dataPath = '../../psychopyData/prediction/'
 debug=0
 
+# to quit the experiment at any point by pressing escape
+event.globalKeys.add(key='escape', func=core.quit)
+
 # === Participant info ===
 subject= 'zh1'
-
 
 # === File setup ===
 timestamp = datetime.datetime.now().strftime("%d_%m_%H%M")
@@ -52,7 +54,7 @@ TF = 5           # temporal frequency (Hz)
 stimSize=1
 inducerx = 2
 inducery = 2
-n_trials = 80  # total trials per block
+n_trials = 100  # total trials per block
 phaseStep = TF / frameRate  # phase increment per frame
 nframes = round(1 * frameRate)
 blankframes = round(0.10 * frameRate)
@@ -211,7 +213,12 @@ for location, phase in blocks:
                           color='black', height=0.5)
     msg.draw()
     win.flip()
-    event.waitKeys(keyList=['space'])
+    kb = keyboard.Keyboard()
+    kb.clearEvents()
+    keys = []
+    while not keys:
+        keys = kb.getKeys()
+
     core.wait(1)
     
 # === Compute thresholds by edge type ===

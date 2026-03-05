@@ -51,8 +51,8 @@ else:
 stimDuration =  0.15
 isi= 0.5
 fixate = 0.5
-correctSound = sound.Sound(1800, octave=14, stereo=True, secs=0.01)
-incorrectSound = sound.Sound(700, octave=7, stereo=True, secs=0.01)
+correctSound = sound.Sound(1800, octave=14, stereo=True, secs=0.05)
+incorrectSound = sound.Sound(700, octave=7, stereo=True, secs=0.05)
 noiseSd = np.sqrt(0.1)
 noiseMean = 0
 
