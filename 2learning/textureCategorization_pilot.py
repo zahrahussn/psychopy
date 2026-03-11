@@ -11,29 +11,30 @@ import csv
 from pathlib import Path
 import datetime
 
-debug = 1
+subject = 'tmp'
 
-dataPath = '/Users/zhussain1/Documents/psychopyData/preexposureLearning/'
-stimFolder = Path('/Users/zhussain1/Dropbox/Research/Ongoing/preexposureLearning/code/stimuli/')
-
-subject = 'ld'
+debug = 0
+#dataPath = '/Users/zhussain1/Documents/psychopyData/preexposureLearning/'
+#stimFolder = Path('/Users/zhussain1/Dropbox/Research/Ongoing/preexposureLearning/code/stimuli/')
+dataPath='../../psychopyData/learning/preex_pilot/'
+stimFolder = Path('../../psychopy/2learning/stimuli/')
 
 timestamp = datetime.datetime.now().strftime("%d_%m_%H%M")
 dataFileName = subject+'_textureCategorization'+'_'+timestamp
 dataFile = open(dataPath+dataFileName + '.csv', 'a')
 dataFile.write('block, trial, stim, sf, band, ref, texture, accuracy, rt\n')
-dataFile.flush()   # forces it to disk
+#dataFile.flush()   # forces it to disk
 # PsychoPy experiment handler
 thisExp = data.ExperimentHandler(
     name='textureCategorization',
     version='1.0',
     extraInfo={'participant':subject},
-    dataFileName=dataPath+dataFileName
+#    dataFileName=dataPath+dataFileName
 )
 
 # === Load sounds ===
-correctSound = sound.Sound(1800, octave=14, stereo=True, secs=0.01)
-incorrectSound = sound.Sound(700, octave=7, stereo=True, secs=0.01)
+corSnd = sound.Sound(1200, octave=14, stereo=True, secs=0.05)
+incorSnd = sound.Sound(400, octave=7, stereo=True, secs=0.05)
 
 # === Monitor setup ===
 if platform.platform()[0:5] == 'Linux':
@@ -102,7 +103,7 @@ blockConditions = [
 
 blocks = data.TrialHandler(
     trialList=blockConditions,
-    nReps=1,
+    nReps=2,
     method='random',
     name='blocks'
 )
@@ -120,9 +121,7 @@ trialNum = 0
 for thisBlock in blocks:
 
     blockNum += 1
-
     folderPath = stimFolder / thisBlock['folder']
-
     tex_files = sorted(
         [f.name for f in folderPath.glob('AX*.jpg')] +
         [f.name for f in folderPath.glob('BX*.jpg')]
@@ -156,7 +155,6 @@ for thisBlock in blocks:
 
         full_path = folderPath / img_file
         texStim.image = str(full_path)
-
         texture = img_file.replace('.jpg','')
 
         # fixation
@@ -195,14 +193,14 @@ for thisBlock in blocks:
 
                     if thisKey.name == corresp:
                         thisResp = 1
-                        correctSound.play()
+                        corSnd.play()
                         for frameN in range(int(round(feedbackDuration * frameRate))):
                             fixationCorrect.draw()
                             win.flip()
 
                     else:
                         thisResp = 0
-                        incorrectSound.play()
+                        incorSnd.play()
                         for frameN in range(int(round(feedbackDuration * frameRate))):
                             fixationIncorrect.draw()
                             win.flip()
@@ -213,7 +211,7 @@ for thisBlock in blocks:
         win.flip()
         # save data
         dataFile.write(f"{blockNum}, {trialNum},{thisBlock['folder']},{thisBlock['sf']}, {thisBlock['band']}, {thisBlock['ref']}, {texture},{thisResp},{round(rt,2)}\n")
-        dataFile.flush()   # forces it to disk
+        #dataFile.flush()   # forces it to disk
 
     # --------------------------------------------------
     # END OF BLOCK SCREEN
