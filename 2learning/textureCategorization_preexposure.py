@@ -11,8 +11,8 @@ import csv
 import time, numpy as np
 from pathlib import Path
 import datetime
-debug = 1
-dataPath = '/Users/zhussain1/Documents/psychopyData/preexposureLearning/'
+debug = 0
+dataPath = '../../psychopyData/learning/preexposure/'
 
 subject = 'zh_test'
 preexposureType = 'control' # preexposureType options: 'intermixed', 'blocked', 'control'
@@ -25,7 +25,7 @@ elif stimulusXType == 'variable':
 else:
     raise ValueError("stimulusXType must be 'fixed' or 'variable'")
 
-stimFolder = Path('/Users/zhussain1/Documents/psychopy/2learning/stimuli/') / stimSubfolder
+stimFolder = Path('../../psychopy/2learning/stimuli/') / stimSubfolder
 #stimFolder = Path('/Users/zhussain1/Dropbox/Research/Ongoing/preexposureLearning/code/stimuli/') / stimSubfolder
 timestamp = datetime.datetime.now().strftime("%d_%m_%H%M")
 dataFileName = (
@@ -154,7 +154,7 @@ def build_preexposure_list(stim_list, preexposure_type):
     elif preexposure_type == 'control':
         control_list = []
 
-        for i in range(2):
+        for i in range(60):
             control_list.append({
                 'file': None,
                 'category': 'noise',
